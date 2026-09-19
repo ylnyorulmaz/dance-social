@@ -57,6 +57,7 @@
     .feed-card h3{font-size:20px;letter-spacing:-.025em;margin:12px 0 7px}.feed-card p{color:#48453f;line-height:1.55}.badge{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
     .actions-line{display:flex;gap:18px;color:var(--muted);font-size:13px;margin-top:14px}
     .right-card{padding:18px;margin-bottom:14px}.right-card h3{margin:0 0 14px;font-size:17px}.event{padding:12px 0;border-top:1px solid var(--line)}.event:first-of-type{border-top:0}.event strong{display:block}.event span{font-size:12px;color:var(--muted)}.community-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.community-row:first-child{border-top:0}.community-icon{width:36px;height:36px;border-radius:12px;background:#f0ede5;display:grid;place-items:center;font-weight:900}.community-copy{min-width:0;flex:1}.community-copy strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.community-copy span{font-size:11px;color:var(--muted)}.community-open{border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.modal-backdrop{position:fixed;inset:0;background:rgba(20,18,15,.46);display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(520px,100%);background:#fff;border-radius:26px;border:1px solid var(--line);box-shadow:var(--shadow);padding:24px}.modal-head{display:flex;align-items:center;gap:14px}.modal-head h2{margin:0;font-size:27px;letter-spacing:-.035em}.modal-head button{margin-left:auto;border:0;background:#f3f0e9;width:36px;height:36px;border-radius:50%;font-size:19px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;z-index:70;box-shadow:var(--shadow)}.post-destination{color:var(--blue);font-weight:800}.empty{font-size:13px;color:var(--muted);padding:6px 0}
+    .community-page{display:flex;flex-direction:column;gap:14px}.community-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.community-cover{height:150px;background:linear-gradient(135deg,#ef4f32 0%,#ef4f32 34%,#2647d7 34%,#2647d7 67%,#2f9b72 67%);opacity:.92}.community-body{padding:22px}.community-topline{display:flex;align-items:flex-start;gap:16px}.community-big-icon{width:72px;height:72px;border-radius:20px;background:#f3f0e9;display:grid;place-items:center;font-size:30px;font-weight:900;margin-top:-56px;border:5px solid #fff}.community-title-wrap{min-width:0;flex:1}.community-title-wrap h2{font-size:32px;letter-spacing:-.04em;margin:0 0 4px}.community-meta{color:var(--muted);font-size:13px}.community-description{color:#4b4740;line-height:1.6;margin:16px 0 0}.community-actions{display:flex;gap:9px;flex-wrap:wrap}.back-link{border:0;background:transparent;color:var(--muted);font-weight:800;padding:0;margin-bottom:2px;text-align:left}.community-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.community-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.community-tab.active{background:#f1eee7;color:var(--ink)}.community-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-panel h3{margin:0 0 12px}.member-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.member{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px}.member .mini{flex:0 0 auto}.community-composer{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-composer textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:14px;padding:13px 14px;resize:vertical;outline:none}.community-composer textarea:focus{border-color:rgba(239,79,50,.7);box-shadow:0 0 0 3px rgba(239,79,50,.08)}.community-composer-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}.community-post-list .empty-state{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--muted)}.small-stat{display:inline-flex;align-items:center;gap:5px;margin-right:12px}.community-row .community-copy{cursor:pointer}.community-row-actions{display:flex;gap:6px}.community-row-actions button{border:0;background:#f3f0e9;border-radius:999px;padding:7px 9px;font-size:11px;font-weight:800}
     @media(max-width:960px){.shell{grid-template-columns:1fr}.brand-side{min-height:38vh}.auth-side{border-left:0;border-top:1px solid var(--line)}.app-grid{grid-template-columns:1fr}.app-grid aside{display:none}.topbar nav{display:none}}
     @media(max-width:560px){.panel{padding:20px;border-radius:22px}.choice-grid{grid-template-columns:1fr}.row{display:block}.brand-side{padding:24px}.hero{padding:28px 0}.hero h1{font-size:48px}.auth-side{padding:16px}}
   </style>
@@ -161,6 +162,7 @@
     </aside>
 
     <main>
+      <section id="homeView">
       <div class="feed-card composer" id="feed">
         <div class="composer-head">
           <strong>Create a post</strong>
@@ -193,6 +195,50 @@
         <p>I am deciding between the Kadıköy social and the Balboa night. Who is going where?</p>
         <div class="actions-line"><span>♡ 12</span><span>💬 14</span><span>↗ Share</span></div>
       </article>
+      </section>
+
+      <section id="communityView" class="community-page hidden">
+        <button id="backHomeBtn" class="back-link">← Back to home</button>
+        <div class="community-hero">
+          <div class="community-cover"></div>
+          <div class="community-body">
+            <div class="community-topline">
+              <div id="communityBigIcon" class="community-big-icon">L</div>
+              <div class="community-title-wrap">
+                <h2 id="communityTitle">Community</h2>
+                <div id="communityMeta" class="community-meta"></div>
+              </div>
+              <div class="community-actions">
+                <button id="communityJoinBtn" class="primary">Join</button>
+              </div>
+            </div>
+            <p id="communityDescriptionView" class="community-description"></p>
+          </div>
+        </div>
+
+        <div class="community-tabs">
+          <button class="community-tab active" data-community-tab="feed">Feed</button>
+          <button class="community-tab" data-community-tab="events">Events</button>
+          <button class="community-tab" data-community-tab="members">Members</button>
+          <button class="community-tab" data-community-tab="about">About</button>
+        </div>
+
+        <div id="communityFeedTab">
+          <div class="community-composer">
+            <strong id="communityComposerLabel">Post to community</strong>
+            <textarea id="communityComposerInput" placeholder="Start a conversation…"></textarea>
+            <div class="community-composer-footer">
+              <span class="hint" style="margin:0">This post will live inside this community.</span>
+              <button id="communityPublishBtn" class="primary">Publish</button>
+            </div>
+          </div>
+          <div id="communityPostList" class="community-post-list" style="margin-top:14px"></div>
+        </div>
+
+        <div id="communityEventsTab" class="community-panel hidden"></div>
+        <div id="communityMembersTab" class="community-panel hidden"></div>
+        <div id="communityAboutTab" class="community-panel hidden"></div>
+      </section>
     </main>
 
     <aside>
@@ -244,6 +290,7 @@
   let state = { role:'', dances:[], invite:'' };
   let currentProfile = null;
   let currentPostType = 'Post';
+  let activeCommunityId = null;
   const defaultCommunities = [
     {id:'lindy-istanbul',name:'Lindy Hop Istanbul',dance:'Lindy Hop',city:'Istanbul',description:'Socials, practice, music and festival plans.',members:128},
     {id:'salsa-istanbul',name:'Salsa Istanbul',dance:'Salsa',city:'Istanbul',description:'Salsa nights, classes and community talk.',members:94},
@@ -299,15 +346,132 @@
       const initial = escapeHtml((c.name || '?').charAt(0).toUpperCase());
       return '<div class="community-row">' +
         '<div class="community-icon">' + initial + '</div>' +
-        '<div class="community-copy"><strong>' + escapeHtml(c.name) + '</strong><span>' +
+        '<div class="community-copy" data-open-community-id="' + escapeHtml(c.id) + '"><strong>' + escapeHtml(c.name) + '</strong><span>' +
         escapeHtml([c.dance,c.city].filter(Boolean).join(' · ')) + '</span></div>' +
-        '<button class="community-open" data-community-id="' + escapeHtml(c.id) + '">Post here</button></div>';
+        '<div class="community-row-actions"><button data-open-community-id="' + escapeHtml(c.id) + '">Open</button>' +
+        '<button data-post-community-id="' + escapeHtml(c.id) + '">Post</button></div></div>';
     }).join('');
-    list.querySelectorAll('[data-community-id]').forEach(btn => btn.addEventListener('click', () => {
-      $('postDestination').value = 'community:' + btn.dataset.communityId;
-      $('composerInput').focus();
-      $('composerInput').scrollIntoView({behavior:'smooth',block:'center'});
-    }));
+    list.querySelectorAll('[data-open-community-id]').forEach(el => el.addEventListener('click', () => openCommunity(el.dataset.openCommunityId)));
+    list.querySelectorAll('[data-post-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.postCommunityId, true)));
+  }
+
+  function joinedCommunityIds(){ return loadJSON('danceSocialJoinedCommunities', []); }
+  function isJoined(id){ return joinedCommunityIds().includes(id); }
+  function setJoined(id, joined){
+    let ids = joinedCommunityIds().filter(x => x !== id);
+    if(joined) ids.unshift(id);
+    saveJSON('danceSocialJoinedCommunities', ids);
+  }
+
+  function openCommunity(id, focusComposer){
+    const community = allCommunities().find(c => c.id === id);
+    if(!community) return;
+    activeCommunityId = id;
+    $('homeView').classList.add('hidden');
+    $('communityView').classList.remove('hidden');
+    $('communityBigIcon').textContent = (community.name || '?').charAt(0).toUpperCase();
+    $('communityTitle').textContent = community.name;
+    const joined = isJoined(id);
+    const members = Number(community.members || 0) + (joined ? 1 : 0);
+    $('communityMeta').innerHTML =
+      '<span class="small-stat">' + escapeHtml(community.dance || 'Dance') + '</span>' +
+      '<span class="small-stat">' + escapeHtml(community.city || 'Global') + '</span>' +
+      '<span class="small-stat">' + members + ' members</span>';
+    $('communityDescriptionView').textContent = community.description || 'A community for dancers.';
+    $('communityComposerLabel').textContent = 'Post to ' + community.name;
+    updateJoinButton();
+    selectCommunityTab('feed');
+    renderCommunityPosts();
+    renderCommunityEvents();
+    renderCommunityMembers();
+    renderCommunityAbout();
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(focusComposer) setTimeout(() => $('communityComposerInput').focus(), 250);
+  }
+
+  function closeCommunityView(){
+    activeCommunityId = null;
+    $('communityView').classList.add('hidden');
+    $('homeView').classList.remove('hidden');
+    renderPosts();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function updateJoinButton(){
+    if(!activeCommunityId) return;
+    const joined = isJoined(activeCommunityId);
+    $('communityJoinBtn').textContent = joined ? 'Joined ✓' : 'Join';
+    $('communityJoinBtn').className = joined ? 'secondary' : 'primary';
+  }
+
+  function selectCommunityTab(name){
+    document.querySelectorAll('.community-tab').forEach(btn => btn.classList.toggle('active', btn.dataset.communityTab === name));
+    $('communityFeedTab').classList.toggle('hidden', name !== 'feed');
+    $('communityEventsTab').classList.toggle('hidden', name !== 'events');
+    $('communityMembersTab').classList.toggle('hidden', name !== 'members');
+    $('communityAboutTab').classList.toggle('hidden', name !== 'about');
+  }
+
+  function postCardHtml(post){
+    const profile = post.profile || {};
+    const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
+    return '<article class="feed-card">' +
+      '<div class="meta"><div class="mini">' + initial + '</div><div><strong>' + escapeHtml(profile.name || 'Dancer') + '</strong><br><span>' +
+      escapeHtml(post.communityName || 'Community') + ' · just now</span></div></div>' +
+      '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
+      '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
+      '<div class="actions-line"><span>♡ 0</span><span>💬 0</span><span>↗ Share</span></div></article>';
+  }
+
+  function renderCommunityPosts(){
+    if(!activeCommunityId) return;
+    const community = allCommunities().find(c => c.id === activeCommunityId);
+    const posts = loadJSON('danceSocialPosts', []).filter(p => p.communityId === activeCommunityId);
+    const seeded = activeCommunityId === 'lindy-istanbul' ? [
+      {type:'Question',text:'What are you working on this week: swing-out, musicality or solo jazz?',communityName:'Lindy Hop Istanbul',profile:{name:'DanceTrainer · BOT'}},
+      {type:'Post',text:'Friday social roll call: who is heading to Kadıköy?',communityName:'Lindy Hop Istanbul',profile:{name:'Ayşe Y.'}}
+    ] : [];
+    const all = [...posts, ...seeded];
+    $('communityPostList').innerHTML = all.length
+      ? all.map(postCardHtml).join('')
+      : '<div class="empty-state">No posts yet. Start the first conversation in ' + escapeHtml(community ? community.name : 'this community') + '.</div>';
+  }
+
+  function renderCommunityEvents(){
+    if(!activeCommunityId) return;
+    const c = allCommunities().find(x => x.id === activeCommunityId);
+    const city = c && c.city ? c.city : 'your city';
+    $('communityEventsTab').innerHTML =
+      '<h3>Upcoming events</h3>' +
+      '<div class="event"><strong>Community Social Night</strong><span>Friday · 20:30 · ' + escapeHtml(city) + '</span></div>' +
+      '<div class="event"><strong>Open Practice</strong><span>Sunday · 16:00 · ' + escapeHtml(city) + '</span></div>' +
+      '<p class="hint">Real event creation and recurring-event management comes next.</p>';
+  }
+
+  function renderCommunityMembers(){
+    if(!activeCommunityId) return;
+    const c = allCommunities().find(x => x.id === activeCommunityId);
+    const people = [
+      currentProfile ? currentProfile.name : 'Test Dancer',
+      'Ayşe Y.',
+      'Mert K.',
+      (c && c.creator && c.creator !== 'test') ? '@' + c.creator : 'Deniz A.'
+    ];
+    $('communityMembersTab').innerHTML = '<h3>Members</h3><div class="member-list">' +
+      people.map(name => '<div class="member"><div class="mini">' + escapeHtml(name.charAt(0).toUpperCase()) + '</div><div><strong>' + escapeHtml(name) + '</strong><div class="hint" style="margin:2px 0 0">dancer</div></div></div>').join('') +
+      '</div>';
+  }
+
+  function renderCommunityAbout(){
+    if(!activeCommunityId) return;
+    const c = allCommunities().find(x => x.id === activeCommunityId);
+    if(!c) return;
+    $('communityAboutTab').innerHTML =
+      '<h3>About ' + escapeHtml(c.name) + '</h3>' +
+      '<p style="line-height:1.65;color:#4b4740">' + escapeHtml(c.description || 'A community for dancers.') + '</p>' +
+      '<p class="hint"><strong>Dance / topic:</strong> ' + escapeHtml(c.dance || 'General dance') + '<br>' +
+      '<strong>City:</strong> ' + escapeHtml(c.city || 'Global') + '<br>' +
+      '<strong>Created by:</strong> ' + escapeHtml(c.creator ? '@' + c.creator : 'Dance Social') + '</p>';
   }
 
   function renderDestinationOptions(){
@@ -327,7 +491,7 @@
       const profile = post.profile || {};
       const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
       const destination = post.communityName
-        ? '<span class="post-destination">' + escapeHtml(post.communityName) + '</span>'
+        ? '<button class="post-destination" data-feed-community-id="' + escapeHtml(post.communityId) + '" style="border:0;background:transparent;padding:0;cursor:pointer">' + escapeHtml(post.communityName) + '</button>'
         : '<span class="post-destination">Profile</span>';
       return '<article class="feed-card">' +
         '<div class="meta"><div class="mini">' + initial + '</div><div><strong>' + escapeHtml(profile.name || 'Dancer') + '</strong><br><span>' + destination + ' · just now</span></div></div>' +
@@ -335,6 +499,7 @@
         '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
         '<div class="actions-line"><span>♡ 0</span><span>💬 0</span><span>↗ Share</span></div></article>';
     }).join('');
+    host.querySelectorAll('[data-feed-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.feedCommunityId)));
   }
 
   function openCommunityModal(){
@@ -418,7 +583,44 @@
     $('composerInput').value = '';
     currentPostType = 'Post';
     renderPosts();
+    if(activeCommunityId) renderCommunityPosts();
     toast(communityName ? 'Posted to ' + communityName : 'Posted to your profile');
+  });
+
+
+  $('backHomeBtn').addEventListener('click', closeCommunityView);
+  $('communityJoinBtn').addEventListener('click', () => {
+    if(!activeCommunityId) return;
+    const joined = !isJoined(activeCommunityId);
+    setJoined(activeCommunityId, joined);
+    updateJoinButton();
+    const c = allCommunities().find(x => x.id === activeCommunityId);
+    if(c) openCommunity(activeCommunityId);
+    toast(joined ? 'Joined community' : 'Left community');
+  });
+  document.querySelectorAll('.community-tab').forEach(btn => btn.addEventListener('click', () => selectCommunityTab(btn.dataset.communityTab)));
+
+  $('communityPublishBtn').addEventListener('click', () => {
+    if(!activeCommunityId) return;
+    const text = $('communityComposerInput').value.trim();
+    if(!text){ toast('Write something first.'); return; }
+    const community = allCommunities().find(c => c.id === activeCommunityId);
+    if(!community) return;
+    const posts = loadJSON('danceSocialPosts', []);
+    posts.unshift({
+      id:'post-' + Date.now(),
+      type:'Post',
+      text,
+      destination:'community',
+      communityId:community.id,
+      communityName:community.name,
+      profile:currentProfile || {name:'Test Dancer'}
+    });
+    saveJSON('danceSocialPosts', posts);
+    $('communityComposerInput').value = '';
+    renderCommunityPosts();
+    renderPosts();
+    toast('Posted to ' + community.name);
   });
 
   $('createCommunityBtn').addEventListener('click', openCommunityModal);
@@ -441,11 +643,12 @@
     renderCommunities(); renderDestinationOptions();
     $('postDestination').value = 'community:' + community.id;
     closeCommunityModal();
+    openCommunity(community.id, true);
     toast(name + ' created');
   });
 
   $('logoutBtn').addEventListener('click', () => {
-    $('app').classList.add('hidden'); $('gate').classList.remove('hidden'); setTab('login');
+    closeCommunityView(); $('app').classList.add('hidden'); $('gate').classList.remove('hidden'); setTab('login');
   });
 
   const saved = localStorage.getItem('danceSocialProfile');
