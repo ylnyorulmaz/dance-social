@@ -86,7 +86,7 @@ The current direction is:
 - Supabase Realtime where useful,
 - server/edge functions for trusted backend operations.
 
-See [cloud.md](./cloud.md) for architecture and deployment guidance.
+See [claude.md](./claude.md) for Claude-specific project guidance, implementation priorities and architecture notes.
 
 ## Core Product Loop
 
@@ -118,8 +118,8 @@ The product should optimize for real-world participation and useful community ac
 
 - [PRODUCT.md](./PRODUCT.md) — product definition, vision, target audience, features, business model, risks and limitations.
 - [PRODUCT_ROADMAP.md](./PRODUCT_ROADMAP.md) — immediate, short-, medium- and long-term roadmap.
-- [agent.md](./agent.md) — instructions and constraints for coding agents working in this repository.
-- [cloud.md](./cloud.md) — target cloud architecture, Supabase model, deployment and security guidance.
+- [agent.md](./agent.md) — general instructions and constraints for coding agents working in this repository.
+- [claude.md](./claude.md) — Claude-specific working instructions, repository context and implementation guidance.
 
 ## Next Build Priority
 
