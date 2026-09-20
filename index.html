@@ -875,6 +875,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     renderProfilePage();
+    if(!$('peopleView').classList.contains('hidden')) renderPeople();
   }
   function profileCommunityIds(profile){
     if(!profile) return [];
@@ -1170,7 +1171,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       avatarUrl: row.avatar_url || '',
       dances,
       danceStyleIds: danceRows.map(item => item.dance_style_id).filter(id => id !== null && id !== undefined),
-      danceStylesLoaded: Array.isArray(row.profile_dance_styles)
+      danceStylesLoaded: Array.isArray(row.profile_dance_styles),
+      detailsLoaded: Object.prototype.hasOwnProperty.call(row,'bio')
     };
   }
 
@@ -1562,7 +1564,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   async function openUserProfile(username){
     let profile = realProfilesByUsername[username] || null;
-    if(!profile || !profile.danceStylesLoaded){
+    if(!profile || !profile.detailsLoaded){
       const { data, error } = await supabaseClient
         .from('profiles')
         .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot,profile_dance_styles(dance_style_id,level,dance_role,dance_styles(id,slug,name))')
@@ -1813,7 +1815,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const own = post.authorId === currentProfile?.id;
     const ownerActions = own
       ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
-      : '';
+      : '<button type="button" class="report-link" data-report-type="post" data-report-id="' + post.id + '" data-report-label="Post by ' + escapeHtml(target.name || 'Dancer') + '">Report</button>';
     return '<article class="feed-card">' +
       '<div class="meta"><div class="mini">' + avatarInner(target) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(target.username || currentUsername()) + '">' + escapeHtml(target.name || 'Dancer') + '</button><br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
@@ -2083,7 +2085,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       const own = post.authorId === currentProfile?.id;
       const ownerActions = own
         ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
-        : '';
+        : '<button type="button" class="report-link" data-report-type="post" data-report-id="' + post.id + '" data-report-label="Post by ' + escapeHtml(profile.name || 'Dancer') + '">Report</button>';
       return '<article class="feed-card">' +
         '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
         '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
@@ -3061,6 +3063,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     persisted.dances = persistedDances;
     persisted.danceStyleIds = loadedDanceStyles.filter(style => persistedDances.includes(style.name)).map(style => style.id);
     persisted.danceStylesLoaded = true;
+    persisted.detailsLoaded = true;
     currentProfile = persisted;
     viewedProfile = persisted;
     realProfilesByUsername[persisted.username] = persisted;
