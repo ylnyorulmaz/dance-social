@@ -36,7 +36,7 @@
     
     .primary,.secondary{border:0;border-radius:999px;padding:13px 18px;font-weight:800}.primary{background:var(--ink);color:white}.secondary{background:#f0eee8;color:var(--ink)}
     .full{width:100%;margin-top:10px}.hint{font-size:12px;color:var(--muted);margin-top:12px}.hint code{background:#f4f2ec;padding:3px 6px;border-radius:6px}
-    .error{background:#fff0ed;color:#a92d1a;border:1px solid #ffd1c7;padding:10px 12px;border-radius:12px;font-size:13px;margin:12px 0}
+    .error{background:#fff0ed;color:#a92d1a;border:1px solid #ffd1c7;padding:10px 12px;border-radius:12px;font-size:13px;margin:12px 0}.magic-success{background:#eaf7f0;color:#176341;border:1px solid #c8ead9;padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.5;margin:12px 0}
     .stepper{display:flex;gap:6px;margin-bottom:24px}.stepper span{height:5px;flex:1;background:#ece9e1;border-radius:99px}.stepper span.on{background:var(--accent)}
     .choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
     .choice{border:1px solid var(--line);background:#fff;border-radius:16px;padding:16px;text-align:left}
@@ -202,69 +202,38 @@
 
   <div class="auth-side">
     <div class="panel">
-      <div class="tabs">
-        <button class="tab active" data-tab="login">Log in</button>
-        <button class="tab" data-tab="invite">I have an invite</button>
-      </div>
-
       <div id="loginView">
-        <h2>Welcome back.</h2>
-        <p class="sub">Demo login is active for the first prototype.</p>
-        <div id="loginError" class="error hidden">Wrong credentials. Use test / test.</div>
-        <div class="field"><label>Username</label><input id="loginUser" autocomplete="username" value="test"></div>
-        <div class="field"><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" value="test"></div>
-        <button id="loginBtn" class="primary full">Log in</button>
-        <p class="hint">Prototype credentials: <code>test</code> / <code>test</code></p>
+        <span class="eyebrow">Passwordless access</span>
+        <h2>Enter Dance Social.</h2>
+        <p class="sub">One magic link handles both sign-up and login. No password to create or remember.</p>
+        <div id="loginError" class="error hidden" role="alert"></div>
+        <div id="loginSuccess" class="magic-success hidden" role="status" aria-live="polite"></div>
+        <form id="magicLinkForm">
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
+          </div>
+          <button id="loginBtn" class="primary full" type="submit">Email me a magic link</button>
+        </form>
+        <p class="hint">New here? The same link creates your account. Already a member? It signs you in.</p>
       </div>
 
-      <div id="inviteView" class="hidden">
-        <div id="step1">
-          <div class="stepper"><span class="on"></span><span></span><span></span><span></span></div>
-          <h2>Enter your invite.</h2>
-          <p class="sub">Each member can bring trusted people into the community.</p>
-          <div id="inviteError" class="error hidden">That demo invite code is not valid.</div>
-          <div class="field"><label>Invitation code</label><input id="inviteCode" placeholder="e.g. DANCE2026"></div>
-          <button id="inviteNext" class="primary full">Continue</button>
-          <p class="hint">Demo codes: <code>DANCE2026</code>, <code>LINDY2026</code>, <code>SALSA2026</code>, <code>TEST</code></p>
+      <div id="profileSetupView" class="hidden">
+        <span class="eyebrow">First time here</span>
+        <h2>Set up your dance profile.</h2>
+        <p class="sub">Your account is verified. Add the basics before entering the community.</p>
+        <div id="profileSetupError" class="error hidden" role="alert"></div>
+        <div class="row">
+          <div class="field"><label for="setupName">Name</label><input id="setupName" maxlength="80" required></div>
+          <div class="field"><label for="setupCity">City</label><input id="setupCity" placeholder="Istanbul" required></div>
         </div>
-
-        <div id="step2" class="hidden">
-          <div class="stepper"><span class="on"></span><span class="on"></span><span></span><span></span></div>
-          <h2>Where are you in dance?</h2>
-          <p class="sub">This shapes your starting feed. You can change it later.</p>
-          <div class="choice-grid" id="roleChoices">
-            <button class="choice" data-role="dancer"><strong>I dance already</strong><small>I actively attend classes or socials.</small></button>
-            <button class="choice" data-role="beginner"><strong>I want to start</strong><small>I am curious or just beginning.</small></button>
-            <button class="choice" data-role="teacher"><strong>I teach</strong><small>Instructor, coach or dance professional.</small></button>
-            <button class="choice" data-role="organizer"><strong>I organize</strong><small>School, venue, DJ or event organizer.</small></button>
-          </div>
-          <button id="roleNext" class="primary full">Continue</button>
+        <div class="field"><label for="setupUsername">Username</label><input id="setupUsername" autocomplete="username" maxlength="30" placeholder="yourname" required></div>
+        <div class="row">
+          <div class="field"><label for="setupRole">Role</label><select id="setupRole"><option value="dancer">Dancer</option><option value="beginner">Beginner</option><option value="instructor">Instructor</option><option value="dj">DJ</option><option value="organizer">Organizer</option></select></div>
+          <div class="field"><label for="setupPrivacy">Profile</label><select id="setupPrivacy"><option value="public">Public</option><option value="private">Private</option></select></div>
         </div>
-
-        <div id="step3" class="hidden">
-          <div class="stepper"><span class="on"></span><span class="on"></span><span class="on"></span><span></span></div>
-          <h2>What do you dance?</h2>
-          <p class="sub">Pick as many as you want.</p>
-          <div class="chips" id="danceChoices">
-            <button class="chip">Lindy Hop</button><button class="chip">Solo Jazz</button><button class="chip">Balboa</button>
-            <button class="chip">Salsa</button><button class="chip">Bachata</button><button class="chip">Tango</button>
-            <button class="chip">Kizomba</button><button class="chip">West Coast Swing</button><button class="chip">Hip-Hop</button>
-            <button class="chip">K-pop</button><button class="chip">Contemporary</button><button class="chip">Folk</button>
-          </div>
-          <button id="danceNext" class="primary full">Continue</button>
-        </div>
-
-        <div id="step4" class="hidden">
-          <div class="stepper"><span class="on"></span><span class="on"></span><span class="on"></span><span class="on"></span></div>
-          <h2>Finish your profile.</h2>
-          <p class="sub">Keep it simple. This is a private beta.</p>
-          <div class="row">
-            <div class="field"><label>Name</label><input id="profileName" placeholder="Your name"></div>
-            <div class="field"><label>City</label><input id="profileCity" value="Istanbul"></div>
-          </div>
-          <div class="field"><label>Username</label><input id="profileUser" placeholder="@username"></div>
-          <button id="finishOnboarding" class="primary full">Enter Dance Social</button>
-        </div>
+        <button id="completeProfileBtn" class="primary full" type="button">Enter Dance Social</button>
+        <button id="setupLogoutBtn" class="secondary full" type="button">Use another email</button>
       </div>
     </div>
   </div>
@@ -493,7 +462,7 @@
     </div>
     <div class="row">
       <div class="field"><label>City</label><input id="editCity"></div>
-      <div class="field"><label>Role</label><select id="editRole"><option value="dancer">Dancer</option><option value="beginner">Beginner</option><option value="teacher">Teacher</option><option value="organizer">Organizer</option><option value="demo account">Demo account</option></select></div>
+      <div class="field"><label>Role</label><select id="editRole"><option value="dancer">Dancer</option><option value="beginner">Beginner</option><option value="instructor">Instructor</option><option value="dj">DJ</option><option value="organizer">Organizer</option><option value="school">School</option><option value="venue">Venue</option></select></div>
     </div>
     <div class="field"><label>Bio</label><textarea id="editBio" placeholder="A little about your dance life…"></textarea></div>
     <div class="field"><label>Dance styles</label><input id="editDances" placeholder="Lindy Hop, Salsa, Tango"></div><div class="field"><label>Profile privacy</label><select id="editProfilePrivacy"><option value="public">Public — visible to all members</option><option value="private">Private — only followers can see full profile</option></select></div>
@@ -520,17 +489,23 @@
 </div>
 <div id="toast" class="toast hidden"></div>
 
-<script>
-(() => {
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm';
+
+(async () => {
+  const SUPABASE_URL = 'https://mundrudlwetycyoglyep.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_TL6rwxbdHSRRtOForL1J6g__Edr6xT6';
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+    auth: { persistSession:true, autoRefreshToken:true, detectSessionInUrl:true }
+  });
   const $ = (id) => document.getElementById(id);
-  const tabs = document.querySelectorAll('.tab');
-  const loginView = $('loginView'), inviteView = $('inviteView');
-  const acceptedInvites = ['DANCE2026','LINDY2026','SALSA2026','TEST'];
-  let state = { role:'', dances:[], invite:'' };
+  let currentSession = null;
   let currentProfile = null;
   let currentPostType = 'Post';
   let activeCommunityId = null;
   let viewedProfile = null;
+  let loadedPosts = [];
+  const realProfilesByUsername = {};
   const demoUsers = {
     ayse: {privacy:'public',name:'Ayşe Y.',username:'ayse',city:'Istanbul',role:'dancer',dances:['Lindy Hop','Balboa','Solo Jazz'],bio:'Lindy hopper, social dancer and weekend workshop collector.',followers:84,following:61,communities:['lindy-istanbul'],followsCurrent:true},
     mert: {privacy:'private',name:'Mert K.',username:'mert',city:'Istanbul',role:'dancer',dances:['Salsa','Bachata'],bio:'Salsa social regular. Usually looking for the next good social.',followers:47,following:72,communities:['salsa-istanbul'],followsCurrent:false},
@@ -599,7 +574,7 @@
   function profileByUsername(username){
     if(!username) return null;
     if(currentProfile && username === currentUsername()) return currentProfile;
-    return demoUsers[username] || null;
+    return realProfilesByUsername[username] || demoUsers[username] || null;
   }
   function isOwnViewedProfile(){ return !viewedProfile || (viewedProfile.username || 'test') === currentUsername(); }
   function profileCommunityIds(profile){
@@ -630,12 +605,87 @@
     return (map[username] || []).map(p => ({...p,profile:profileByUsername(username)}));
   }
 
-  function setTab(name){
-    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
-    loginView.classList.toggle('hidden', name !== 'login');
-    inviteView.classList.toggle('hidden', name !== 'invite');
+  function showAuthError(message){
+    const el = $('loginError');
+    el.textContent = message || 'Something went wrong.';
+    el.classList.remove('hidden');
+    $('loginSuccess').classList.add('hidden');
   }
-  tabs.forEach(t => t.addEventListener('click', () => setTab(t.dataset.tab)));
+
+  function showAuthSuccess(message){
+    $('loginSuccess').textContent = message;
+    $('loginSuccess').classList.remove('hidden');
+    $('loginError').classList.add('hidden');
+  }
+
+  function profileToUi(row){
+    return {
+      id: row.id,
+      name: row.display_name,
+      username: row.username,
+      city: row.city || '',
+      role: row.role || 'dancer',
+      privacy: row.privacy || 'public',
+      bio: row.bio || '',
+      avatarUrl: row.avatar_url || '',
+      dances: []
+    };
+  }
+
+  function suggestedUsername(user){
+    const local = String(user.email || 'dancer').split('@')[0].toLowerCase()
+      .replace(/[^a-z0-9_.-]+/g,'-').replace(/^[^a-z0-9_]+/,'').slice(0,20);
+    return (local || 'dancer') + '-' + String(user.id).slice(0,6);
+  }
+
+  function showAuthGate(){
+    currentSession = null;
+    currentProfile = null;
+    viewedProfile = null;
+    $('app').classList.add('hidden');
+    $('gate').classList.remove('hidden');
+    $('profileSetupView').classList.add('hidden');
+    $('loginView').classList.remove('hidden');
+    $('loginBtn').disabled = false;
+    $('loginBtn').textContent = 'Email me a magic link';
+  }
+
+  function showProfileSetup(user){
+    $('app').classList.add('hidden');
+    $('gate').classList.remove('hidden');
+    $('loginView').classList.add('hidden');
+    $('profileSetupView').classList.remove('hidden');
+    const emailName = String(user.email || '').split('@')[0].replace(/[._-]+/g,' ').trim();
+    $('setupName').value = emailName ? emailName.replace(/\b\w/g, c => c.toUpperCase()) : '';
+    $('setupUsername').value = suggestedUsername(user);
+    $('setupCity').focus();
+  }
+
+  async function loadProfileForUser(user){
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
+      .eq('id', user.id)
+      .maybeSingle();
+    if(error) throw error;
+    return data;
+  }
+
+  async function bootstrapSession(session){
+    currentSession = session;
+    try {
+      const row = await loadProfileForUser(session.user);
+      if(!row){ showProfileSetup(session.user); return; }
+      const profile = profileToUi(row);
+      realProfilesByUsername[profile.username] = profile;
+      showApp(profile);
+      if(location.hash === '#profileView') openProfile();
+    } catch(error){
+      console.error(error);
+      showAuthGate();
+      showAuthError(error.message || 'Could not load your profile.');
+    }
+  }
 
   function showApp(profile){
     currentProfile = profile;
@@ -651,8 +701,8 @@
       '<span style="font-size:12px">' + escapeHtml(profile.role || 'dancer') + '</span>';
     renderCommunities();
     renderDestinationOptions();
-    renderPosts();
     renderProfilePage();
+    renderPosts();
     renderHomeEvents();
     setTopNavActive('home');
   }
@@ -863,12 +913,10 @@
   function currentUserPosts(){
     const target = viewedProfile || currentProfile;
     if(!target) return [];
-    const local = loadJSON('danceSocialPosts', []).filter(post => {
-      const p = post.profile || {};
-      if(target.username && p.username) return p.username === target.username;
-      return p.name === target.name;
-    });
-    return [...local, ...seededPostsFor(target.username)];
+    if(currentProfile && target.id && target.id === currentProfile.id){
+      return loadedPosts.filter(post => post.authorId === currentProfile.id);
+    }
+    return seededPostsFor(target.username);
   }
 
   function profilePostHtml(post){
@@ -966,33 +1014,115 @@
   function renderDestinationOptions(){
     const select = $('postDestination');
     if(!select) return;
-    const previous = select.value || 'profile';
-    select.innerHTML = '<option value="profile">My profile</option>' +
-      allCommunities().map(c => '<option value="community:' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>').join('');
-    if([...select.options].some(o => o.value === previous)) select.value = previous;
+    select.innerHTML = '<option value="profile">My profile</option>';
+    select.value = 'profile';
+    select.title = 'Community posting will switch to Supabase when communities are migrated.';
   }
 
-  function renderPosts(){
+  function normalizeDbPost(row){
+    const p = row.profiles || {};
+    const c = row.communities || {};
+    const profile = {
+      id: p.id || row.author_id,
+      name: p.display_name || 'Dancer',
+      username: p.username || '',
+      city: p.city || '',
+      role: p.role || 'dancer',
+      privacy: p.privacy || 'public',
+      bio: p.bio || '',
+      dances: []
+    };
+    if(profile.username) realProfilesByUsername[profile.username] = profile;
+    return {
+      id: row.id,
+      authorId: row.author_id,
+      type: String(row.post_type || 'post').replace(/^./, x => x.toUpperCase()),
+      text: row.body || '',
+      communityId: row.community_id || '',
+      communityName: c.name || '',
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      profile
+    };
+  }
+
+  function postTimeLabel(value){
+    if(!value) return 'now';
+    try {
+      return new Intl.DateTimeFormat(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(value));
+    } catch(e){ return 'recently'; }
+  }
+
+  async function editPost(postId){
+    const post = loadedPosts.find(x => x.id === postId);
+    if(!post || post.authorId !== (currentProfile && currentProfile.id)) return;
+    const next = window.prompt('Edit your post', post.text);
+    if(next === null) return;
+    const body = next.trim();
+    if(!body){ toast('Post cannot be empty.'); return; }
+    const { error } = await supabaseClient.from('posts').update({ body }).eq('id', postId);
+    if(error){ toast(error.message); return; }
+    toast('Post updated');
+    await renderPosts();
+  }
+
+  async function deletePost(postId){
+    const post = loadedPosts.find(x => x.id === postId);
+    if(!post || post.authorId !== (currentProfile && currentProfile.id)) return;
+    if(!window.confirm('Delete this post?')) return;
+    const { error } = await supabaseClient.from('posts').delete().eq('id', postId);
+    if(error){ toast(error.message); return; }
+    toast('Post deleted');
+    await renderPosts();
+  }
+
+  async function renderPosts(){
     const host = $('userPosts');
-    if(!host) return;
-    const posts = loadJSON('danceSocialPosts', []);
-    host.innerHTML = posts.map(post => {
+    if(!host || !currentSession) return;
+    host.innerHTML = '<article class="feed-card"><p class="sub" style="margin:0">Loading live posts…</p></article>';
+    const { data, error } = await supabaseClient
+      .from('posts')
+      .select('id,author_id,community_id,post_type,body,link_url,media_url,visibility,created_at,updated_at,profiles!posts_author_id_fkey(id,username,display_name,city,bio,role,privacy,avatar_url),communities(id,name,slug)')
+      .order('created_at',{ascending:false})
+      .limit(50);
+
+    if(error){
+      console.error(error);
+      host.innerHTML = '<article class="feed-card"><p class="error" style="margin:0">Could not load posts: ' + escapeHtml(error.message) + '</p></article>';
+      return;
+    }
+
+    loadedPosts = (data || []).map(normalizeDbPost);
+    if(!loadedPosts.length){
+      host.innerHTML = '<article class="feed-card"><h3>Your live feed starts here.</h3><p>Create the first Supabase-backed post above.</p></article>';
+      renderProfilePage();
+      return;
+    }
+
+    host.innerHTML = loadedPosts.map(post => {
       const profile = post.profile || {};
       const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
       const destination = post.communityName
-        ? '<button class="post-destination" data-feed-community-id="' + escapeHtml(post.communityId) + '" style="border:0;background:transparent;padding:0;cursor:pointer">' + escapeHtml(post.communityName) + '</button>'
+        ? '<span class="post-destination">' + escapeHtml(post.communityName) + '</span>'
         : '<span class="post-destination">Profile</span>';
       const author = profile.username
         ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
         : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
+      const own = post.authorId === (currentProfile && currentProfile.id);
+      const ownerActions = own
+        ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
+        : '';
       return '<article class="feed-card">' +
-        '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · just now</span></div></div>' +
+        '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
         '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
         '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
-        '<div class="actions-line"><span>♡ 0</span><span>💬 0</span><span>↗ Share</span></div></article>';
+        '<div class="actions-line"><span>♡</span><span>💬</span><span>↗ Share</span>' + ownerActions + '</div></article>';
     }).join('');
-    host.querySelectorAll('[data-feed-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.feedCommunityId)));
+
     host.querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
+    host.querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
+    host.querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
+    renderProfilePage();
   }
 
   function openEventModal(){
@@ -1023,47 +1153,73 @@
   }
   function closeCommunityModal(){ $('communityModal').classList.add('hidden'); }
 
-  $('loginBtn').addEventListener('click', () => {
-    const ok = $('loginUser').value.trim() === 'test' && $('loginPass').value === 'test';
-    $('loginError').classList.toggle('hidden', ok);
-    if(ok){
-      showApp({name:'Test Dancer', username:'test', privacy:'public', city:'Istanbul', dances:['Lindy Hop','Salsa'], role:'demo account', bio:'Testing the private beta and looking for the next social.'});
+  $('magicLinkForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = $('loginEmail').value.trim();
+    if(!email) return;
+    $('loginBtn').disabled = true;
+    $('loginBtn').textContent = 'Sending…';
+    $('loginError').classList.add('hidden');
+    $('loginSuccess').classList.add('hidden');
+
+    const options = { shouldCreateUser:true };
+    if(/^https?:$/.test(window.location.protocol)){
+      options.emailRedirectTo = window.location.origin + window.location.pathname;
     }
+
+    const { error } = await supabaseClient.auth.signInWithOtp({ email, options });
+    $('loginBtn').disabled = false;
+    $('loginBtn').textContent = 'Email me a magic link';
+    if(error){ showAuthError(error.message); return; }
+    showAuthSuccess('Magic link sent to ' + email + '. Open it on this device to continue.');
   });
 
-  $('inviteNext').addEventListener('click', () => {
-    const code = $('inviteCode').value.trim().toUpperCase();
-    const ok = acceptedInvites.includes(code);
-    $('inviteError').classList.toggle('hidden', ok);
-    if(ok){ state.invite = code; $('step1').classList.add('hidden'); $('step2').classList.remove('hidden'); }
-  });
+  $('completeProfileBtn').addEventListener('click', async () => {
+    if(!currentSession || !currentSession.user) return;
+    const displayName = $('setupName').value.trim();
+    const username = $('setupUsername').value.trim().toLowerCase().replace(/^@/,'');
+    const city = $('setupCity').value.trim();
+    const role = $('setupRole').value;
+    const privacy = $('setupPrivacy').value;
+    const errorEl = $('profileSetupError');
+    errorEl.classList.add('hidden');
 
-  document.querySelectorAll('#roleChoices .choice').forEach(btn => btn.addEventListener('click', () => {
-    document.querySelectorAll('#roleChoices .choice').forEach(x => x.classList.remove('selected'));
-    btn.classList.add('selected'); state.role = btn.dataset.role;
-  }));
-  $('roleNext').addEventListener('click', () => {
-    if(!state.role){ document.querySelector('#roleChoices .choice').focus(); return; }
-    $('step2').classList.add('hidden'); $('step3').classList.remove('hidden');
-  });
+    if(!displayName || !username || !city){
+      errorEl.textContent = 'Name, username and city are required.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
 
-  document.querySelectorAll('#danceChoices .chip').forEach(btn => btn.addEventListener('click', () => {
-    btn.classList.toggle('selected');
-    state.dances = [...document.querySelectorAll('#danceChoices .chip.selected')].map(x => x.textContent.trim());
-  }));
-  $('danceNext').addEventListener('click', () => {
-    if(state.dances.length === 0) return;
-    $('step3').classList.add('hidden'); $('step4').classList.remove('hidden');
-  });
+    $('completeProfileBtn').disabled = true;
+    $('completeProfileBtn').textContent = 'Creating profile…';
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .insert({
+        id: currentSession.user.id,
+        username,
+        display_name: displayName,
+        city,
+        role,
+        privacy
+      })
+      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
+      .single();
 
-  $('finishOnboarding').addEventListener('click', () => {
-    const name = $('profileName').value.trim();
-    const city = $('profileCity').value.trim();
-    const username = $('profileUser').value.trim().replace(/^@/,'');
-    if(!name || !city || !username) return;
-    const profile = { name, city, username, privacy:'public', role:state.role, dances:state.dances, invite:state.invite };
-    localStorage.setItem('danceSocialProfile', JSON.stringify(profile));
+    $('completeProfileBtn').disabled = false;
+    $('completeProfileBtn').textContent = 'Enter Dance Social';
+    if(error){
+      errorEl.textContent = error.code === '23505' ? 'That username is already taken.' : error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    const profile = profileToUi(data);
+    realProfilesByUsername[profile.username] = profile;
     showApp(profile);
+  });
+
+  $('setupLogoutBtn').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    showAuthGate();
   });
 
 
@@ -1073,33 +1229,38 @@
     currentPostType = btn.dataset.type;
   }));
 
-  $('publishPostBtn').addEventListener('click', () => {
+  $('publishPostBtn').addEventListener('click', async () => {
     const text = $('composerInput').value.trim();
     if(!text){ toast('Write something first.'); return; }
-    const destination = $('postDestination').value;
-    let communityName = '';
-    let communityId = '';
-    if(destination.startsWith('community:')){
-      communityId = destination.slice('community:'.length);
-      const community = allCommunities().find(c => c.id === communityId);
-      if(community) communityName = community.name;
+    if(!currentSession || !currentProfile){ toast('Sign in first.'); return; }
+    if($('postDestination').value !== 'profile'){
+      toast('Community posting will move to Supabase in the community migration.');
+      return;
     }
-    const posts = loadJSON('danceSocialPosts', []);
-    posts.unshift({
-      id:'post-' + Date.now(),
-      type:currentPostType,
-      text,
-      destination:communityId ? 'community' : 'profile',
-      communityId,
-      communityName,
-      profile:currentProfile ? {...currentProfile} : {name:'Test Dancer',username:'test'}
+
+    const typeMap = {Post:'post',Question:'question',Poll:'poll',Photo:'photo',Link:'link',Event:'event'};
+    const postType = typeMap[currentPostType] || 'post';
+    $('publishPostBtn').disabled = true;
+    $('publishPostBtn').textContent = 'Publishing…';
+
+    const { error } = await supabaseClient.from('posts').insert({
+      author_id: currentProfile.id,
+      post_type: postType,
+      body: text,
+      visibility: 'public'
     });
-    saveJSON('danceSocialPosts', posts);
+
+    $('publishPostBtn').disabled = false;
+    $('publishPostBtn').textContent = 'Publish';
+    if(error){ toast(error.message); return; }
+
     $('composerInput').value = '';
     currentPostType = 'Post';
-    renderPosts();
-    if(activeCommunityId) renderCommunityPosts();
-    toast(communityName ? 'Posted to ' + communityName : 'Posted to your profile');
+    document.querySelectorAll('.post-type').forEach(x => x.style.background = '#f3f0e9');
+    const defaultType = document.querySelector('.post-type[data-type="Post"]');
+    if(defaultType) defaultType.style.background = '#ded9cf';
+    toast('Post published');
+    await renderPosts();
   });
 
 
@@ -1158,18 +1319,33 @@
   $('closeEditProfile').addEventListener('click', closeEditProfile);
   $('cancelEditProfile').addEventListener('click', closeEditProfile);
   $('editProfileModal').addEventListener('click', e => { if(e.target === $('editProfileModal')) closeEditProfile(); });
-  $('saveProfileBtn').addEventListener('click', () => {
+  $('saveProfileBtn').addEventListener('click', async () => {
     const name = $('editName').value.trim();
-    const username = $('editUsername').value.trim().replace(/^@/,'');
+    const username = $('editUsername').value.trim().toLowerCase().replace(/^@/,'');
     const city = $('editCity').value.trim();
     const role = $('editRole').value;
     const bio = $('editBio').value.trim();
     const dances = $('editDances').value.split(',').map(x => x.trim()).filter(Boolean);
     const privacy = $('editProfilePrivacy').value;
     if(!name || !username || !city){ toast('Name, username and city are required.'); return; }
-    currentProfile = {...currentProfile,name,username,city,role,bio,dances,privacy};
-    viewedProfile = currentProfile;
-    localStorage.setItem('danceSocialProfile', JSON.stringify(currentProfile));
+    if(!currentProfile || !currentProfile.id){ toast('Profile is not connected.'); return; }
+
+    $('saveProfileBtn').disabled = true;
+    const { data, error } = await supabaseClient
+      .from('profiles')
+      .update({ display_name:name, username, city, role, bio, privacy })
+      .eq('id', currentProfile.id)
+      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
+      .single();
+    $('saveProfileBtn').disabled = false;
+
+    if(error){ toast(error.code === '23505' ? 'That username is already taken.' : error.message); return; }
+
+    const persisted = profileToUi(data);
+    persisted.dances = dances;
+    currentProfile = persisted;
+    viewedProfile = persisted;
+    realProfilesByUsername[persisted.username] = persisted;
     $('avatar').textContent = name.charAt(0).toUpperCase();
     $('profileSummary').innerHTML =
       '<strong style="color:var(--ink)">' + escapeHtml(name) + '</strong><br>' +
@@ -1178,7 +1354,7 @@
       '<span style="font-size:12px">' + escapeHtml(role) + '</span>';
     closeEditProfile();
     renderProfilePage();
-    renderPosts();
+    await renderPosts();
     toast('Profile updated');
   });
 
@@ -1272,8 +1448,10 @@
     toast(name + ' created');
   });
 
-  $('logoutBtn').addEventListener('click', () => {
-    closeCommunityView(); $('app').classList.add('hidden'); $('gate').classList.remove('hidden'); setTab('login');
+  $('logoutBtn').addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    closeCommunityView();
+    showAuthGate();
   });
 
 
@@ -1311,8 +1489,17 @@
     if(action === 'profile') openProfile();
   }));
 
-  const saved = localStorage.getItem('danceSocialProfile');
-  if(saved){ try { showApp(JSON.parse(saved)); if(location.hash === '#profileView') openProfile(); } catch(e){} }
+  supabaseClient.auth.onAuthStateChange((_event, session) => {
+    window.setTimeout(() => {
+      if(session) bootstrapSession(session);
+      else showAuthGate();
+    }, 0);
+  });
+
+  const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+  if(sessionError) showAuthError(sessionError.message);
+  if(session) await bootstrapSession(session);
+  else showAuthGate();
 })();
 </script>
 </body>
