@@ -888,7 +888,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function postContentHtml(post){
     if(post.poll) return pollHtml(post);
     let html = '';
-    if(post.text) html += postContentHtml(post);
+    if(post.text) html += '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>';
     if(post.mediaUrl) html += '<img class="post-photo" src="' + escapeHtml(post.mediaUrl) + '" alt="Photo shared by ' + escapeHtml(post.profile?.name || 'a dancer') + '">';
     return html;
   }
@@ -1824,7 +1824,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
     host.innerHTML = loadedPosts.map(post => {
       const profile = post.profile || {};
-      const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
+      const initial = avatarInner(profile);
       const destination = post.communityName
         ? '<span class="post-destination">' + escapeHtml(post.communityName) + '</span>'
         : '<span class="post-destination">Profile</span>';
