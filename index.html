@@ -516,11 +516,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     deniz: {privacy:'public',name:'Deniz A.',username:'deniz',city:'Istanbul',role:'teacher',dances:['Tango','Contemporary'],bio:'Teacher, organizer and milonga person.',followers:132,following:44,communities:['tango-istanbul'],followsCurrent:true},
     trainerbot: {privacy:'public',name:'DanceTrainer',username:'trainerbot',city:'Global',role:'BOT',dances:['Lindy Hop','Solo Jazz','Balboa'],bio:'Clearly labeled training bot sharing practice prompts and dance videos.',followers:206,following:0,communities:['lindy-istanbul'],followsCurrent:false,isBot:true}
   };
-  const defaultCommunities = [
-    {id:'lindy-istanbul',privacy:'public',name:'Lindy Hop Istanbul',dance:'Lindy Hop',city:'Istanbul',description:'Socials, practice, music and festival plans.',members:128},
-    {id:'salsa-istanbul',privacy:'public',name:'Salsa Istanbul',dance:'Salsa',city:'Istanbul',description:'Salsa nights, classes and community talk.',members:94},
-    {id:'tango-istanbul',privacy:'private',name:'Tango Istanbul',dance:'Tango',city:'Istanbul',description:'Milongas, practicas and tango culture.',members:81}
-  ];
+
 
   function loadJSON(key, fallback){
     try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch(e){ return fallback; }
