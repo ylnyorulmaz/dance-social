@@ -505,6 +505,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   let activeCommunityId = null;
   let viewedProfile = null;
   let loadedPosts = [];
+  let loadedCommunities = [];
+  let loadedDanceStyles = [];
+  let communityMemberships = new Map();
+  let communityMembersCache = new Map();
   const realProfilesByUsername = {};
   const demoUsers = {
     ayse: {privacy:'public',name:'Ayşe Y.',username:'ayse',city:'Istanbul',role:'dancer',dances:['Lindy Hop','Balboa','Solo Jazz'],bio:'Lindy hopper, social dancer and weekend workshop collector.',followers:84,following:61,communities:['lindy-istanbul'],followsCurrent:true},
@@ -522,26 +526,99 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch(e){ return fallback; }
   }
   function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
-  function allCommunities(){ return [...defaultCommunities, ...loadJSON('danceSocialCommunities', [])]; }
+  function allCommunities(){ return loadedCommunities; }
   function allEvents(){ return loadJSON('danceSocialEvents', []); }
-  function privacyLabel(value){ return value === 'private' ? '🔒 Private' : '🌐 Public'; }
+  function privacyLabel(value){
+    if(value === 'private') return '🔒 Private';
+    if(value === 'hidden') return '◌ Hidden';
+    return '🌐 Public';
+  }
   function canViewProfile(profile){
     if(!profile) return false;
     if((profile.username || 'test') === currentUsername()) return true;
     if((profile.privacy || 'public') === 'public') return true;
     return isFollowing(profile.username);
   }
+  function membershipFor(communityId){ return communityMemberships.get(communityId) || null; }
+  function isJoined(id){ const m = membershipFor(id); return !!m && m.status === 'active'; }
+  function isCommunityOwner(id){
+    const c = allCommunities().find(x => x.id === id);
+    return !!c && !!currentProfile && c.ownerId === currentProfile.id;
+  }
   function canViewCommunity(community){
     if(!community) return false;
-    if((community.privacy || 'public') === 'public') return true;
-    if(community.creator === currentUsername()) return true;
+    if(community.privacy === 'public') return true;
+    if(isCommunityOwner(community.id)) return true;
     return isJoined(community.id);
+  }
+  function canPostToCommunity(community){
+    if(!community || !currentProfile) return false;
+    return isCommunityOwner(community.id) || isJoined(community.id);
   }
   function renderEventCommunityOptions(){
     const select = $('eventCommunity');
     if(!select) return;
+    const options = allCommunities().filter(canPostToCommunity);
     select.innerHTML = '<option value="">No community / personal event</option>' +
-      allCommunities().map(c => '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>').join('');
+      options.map(c => '<option value="' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>').join('');
+  }
+
+  async function refreshCommunities(){
+    if(!currentProfile) return;
+    const [{ data: styles, error: stylesError }, { data: memberships, error: membershipError }, { data: communities, error: communityError }] = await Promise.all([
+      supabaseClient.from('dance_styles').select('id,slug,name').order('name'),
+      supabaseClient.from('community_members').select('community_id,user_id,role,status,joined_at').eq('user_id', currentProfile.id),
+      supabaseClient
+        .from('communities')
+        .select('id,owner_id,slug,name,description,dance_style_id,city,privacy,avatar_url,cover_url,created_at,dance_styles(id,slug,name),profiles!communities_owner_id_fkey(id,username,display_name)')
+        .order('created_at',{ascending:false})
+    ]);
+
+    if(stylesError) console.error(stylesError);
+    if(membershipError) console.error(membershipError);
+    if(communityError){
+      console.error(communityError);
+      toast('Could not load communities');
+      return;
+    }
+
+    loadedDanceStyles = styles || [];
+    communityMemberships = new Map((memberships || []).map(m => [m.community_id, m]));
+    loadedCommunities = (communities || []).map(row => {
+      const owner = row.profiles || {};
+      return {
+        id: row.id,
+        ownerId: row.owner_id,
+        slug: row.slug,
+        name: row.name,
+        description: row.description || '',
+        danceStyleId: row.dance_style_id,
+        dance: row.dance_styles ? row.dance_styles.name : '',
+        city: row.city || '',
+        privacy: row.privacy || 'public',
+        avatarUrl: row.avatar_url || '',
+        coverUrl: row.cover_url || '',
+        creator: owner.username || '',
+        creatorName: owner.display_name || '',
+        createdAt: row.created_at,
+        members: communityMembersCache.get(row.id)?.length || 0
+      };
+    });
+
+    renderCommunities();
+    renderDestinationOptions();
+    renderEventCommunityOptions();
+    renderProfilePage();
+  }
+
+  function resolveDanceStyleId(value){
+    const normalized = String(value || '').trim().toLowerCase();
+    if(!normalized) return null;
+    const match = loadedDanceStyles.find(style =>
+      String(style.name || '').toLowerCase() === normalized ||
+      String(style.slug || '').toLowerCase() === normalized.replace(/\s+/g,'-')
+    );
+    return match ? match.id : null;
   }
   function toast(message){
     $('toast').textContent = message; $('toast').classList.remove('hidden');
@@ -580,9 +657,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function profileCommunityIds(profile){
     if(!profile) return [];
     if(isOwnViewedProfile()){
-      const joined = joinedCommunityIds();
-      const created = loadJSON('danceSocialCommunities', []).filter(c => c.creator === currentUsername()).map(c => c.id);
-      return [...new Set([...joined,...created])];
+      return allCommunities()
+        .filter(c => c.ownerId === profile.id || isJoined(c.id))
+        .map(c => c.id);
     }
     return profile.communities || [];
   }
@@ -703,6 +780,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     renderDestinationOptions();
     renderProfilePage();
     renderPosts();
+    refreshCommunities();
     renderHomeEvents();
     setTopNavActive('home');
   }
@@ -716,28 +794,32 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const list = $('communityList');
     if(!list) return;
     const communities = allCommunities();
+    if(!communities.length){
+      list.innerHTML = '<div class="empty-state">No live communities yet. Create the first one.</div>';
+      return;
+    }
     list.innerHTML = communities.map(c => {
       const initial = escapeHtml((c.name || '?').charAt(0).toUpperCase());
+      const membership = membershipFor(c.id);
+      const state = isCommunityOwner(c.id) ? 'Owner' : (membership?.status === 'active' ? 'Joined' : (membership?.status === 'pending' ? 'Pending' : ''));
+      const postButton = canPostToCommunity(c)
+        ? '<button data-post-community-id="' + escapeHtml(c.id) + '">Post</button>'
+        : '';
       return '<div class="community-row">' +
         '<div class="community-icon">' + initial + '</div>' +
         '<div class="community-copy" data-open-community-id="' + escapeHtml(c.id) + '"><strong>' + escapeHtml(c.name) + '</strong><span>' +
-        escapeHtml([c.dance,c.city].filter(Boolean).join(' · ')) + ' · ' + privacyLabel(c.privacy || 'public') + '</span></div>' +
-        '<div class="community-row-actions"><button data-open-community-id="' + escapeHtml(c.id) + '">Open</button>' +
-        '<button data-post-community-id="' + escapeHtml(c.id) + '">Post</button></div></div>';
+        escapeHtml([c.dance || 'General dance',c.city].filter(Boolean).join(' · ')) + ' · ' + privacyLabel(c.privacy || 'public') + (state ? ' · ' + escapeHtml(state) : '') + '</span></div>' +
+        '<div class="community-row-actions"><button data-open-community-id="' + escapeHtml(c.id) + '">Open</button>' + postButton + '</div></div>';
     }).join('');
     list.querySelectorAll('[data-open-community-id]').forEach(el => el.addEventListener('click', () => openCommunity(el.dataset.openCommunityId)));
     list.querySelectorAll('[data-post-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.postCommunityId, true)));
   }
 
-  function joinedCommunityIds(){ return loadJSON('danceSocialJoinedCommunities', []); }
-  function isJoined(id){ return joinedCommunityIds().includes(id); }
-  function setJoined(id, joined){
-    let ids = joinedCommunityIds().filter(x => x !== id);
-    if(joined) ids.unshift(id);
-    saveJSON('danceSocialJoinedCommunities', ids);
+  function joinedCommunityIds(){
+    return [...communityMemberships.entries()].filter(([,m]) => m.status === 'active').map(([id]) => id);
   }
 
-  function openCommunity(id, focusComposer){
+  async function openCommunity(id, focusComposer){
     const community = allCommunities().find(c => c.id === id);
     if(!community) return;
     activeCommunityId = id;
@@ -747,26 +829,31 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     $('communityView').classList.remove('hidden');
     $('communityBigIcon').textContent = (community.name || '?').charAt(0).toUpperCase();
     $('communityTitle').textContent = community.name;
-    const joined = isJoined(id);
-    const members = Number(community.members || 0) + (joined ? 1 : 0);
-    $('communityMeta').innerHTML =
-      '<span class="small-stat">' + escapeHtml(community.dance || 'Dance') + '</span>' +
-      '<span class="small-stat">' + escapeHtml(community.city || 'Global') + '</span>' +
-      '<span class="small-stat">' + members + ' members</span>' +
-      '<span class="privacy-badge ' + ((community.privacy || 'public') === 'private' ? 'private' : '') + '">' + privacyLabel(community.privacy || 'public') + '</span>';
     $('communityDescriptionView').textContent = community.description || 'A community for dancers.';
     $('communityComposerLabel').textContent = 'Post to ' + community.name;
+
     updateJoinButton();
     const communityAccess = canViewCommunity(community);
-    $('communityFeedTab').classList.toggle('hidden', !communityAccess);
-    $('communityTabsLockedNote') && $('communityTabsLockedNote').remove();
+    const composer = $('communityComposerInput').closest('.community-composer');
+    composer.classList.toggle('hidden', !canPostToCommunity(community));
     selectCommunityTab('feed');
-    renderCommunityPosts();
+
+    $('communityMeta').innerHTML =
+      '<span class="small-stat">' + escapeHtml(community.dance || 'General dance') + '</span>' +
+      '<span class="small-stat">' + escapeHtml(community.city || 'Global') + '</span>' +
+      '<span class="small-stat" id="communityMemberCount">' + Number(community.members || 0) + ' members</span>' +
+      '<span class="privacy-badge ' + ((community.privacy || 'public') === 'private' ? 'private' : '') + '">' + privacyLabel(community.privacy || 'public') + '</span>';
+
+    if(!communityAccess){
+      $('communityPostList').innerHTML = '<div class="empty-state">🔒 Join this private community to see its posts.</div>';
+    } else {
+      await renderCommunityPosts();
+    }
     renderCommunityEvents();
-    renderCommunityMembers();
+    await renderCommunityMembers();
     renderCommunityAbout();
     window.scrollTo({top:0,behavior:'smooth'});
-    if(focusComposer) setTimeout(() => $('communityComposerInput').focus(), 250);
+    if(focusComposer && canPostToCommunity(community)) setTimeout(() => $('communityComposerInput').focus(), 250);
   }
 
   function closeCommunityView(){
@@ -781,10 +868,29 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   function updateJoinButton(){
     if(!activeCommunityId) return;
-    const joined = isJoined(activeCommunityId);
     const c = allCommunities().find(x => x.id === activeCommunityId);
-    $('communityJoinBtn').textContent = joined ? 'Joined ✓' : ((c && c.privacy === 'private') ? 'Request / Join' : 'Join');
-    $('communityJoinBtn').className = joined ? 'secondary' : 'primary';
+    const membership = membershipFor(activeCommunityId);
+    const button = $('communityJoinBtn');
+    button.disabled = false;
+
+    if(isCommunityOwner(activeCommunityId)){
+      button.textContent = 'Owner ✓';
+      button.className = 'secondary';
+      button.disabled = true;
+      return;
+    }
+    if(membership?.status === 'active'){
+      button.textContent = 'Joined ✓ · Leave';
+      button.className = 'secondary';
+      return;
+    }
+    if(membership?.status === 'pending'){
+      button.textContent = 'Request pending · Cancel';
+      button.className = 'secondary';
+      return;
+    }
+    button.textContent = c && c.privacy === 'private' ? 'Request to join' : 'Join';
+    button.className = 'primary';
   }
 
   function selectCommunityTab(name){
@@ -801,28 +907,55 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const author = profile.username
       ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
       : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
+    const own = post.authorId === (currentProfile && currentProfile.id);
+    const ownerActions = own
+      ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
+      : '';
     return '<article class="feed-card">' +
       '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' +
-      escapeHtml(post.communityName || 'Community') + ' · just now</span></div></div>' +
+      escapeHtml(post.communityName || 'Community') + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
       '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
-      '<div class="actions-line"><span>♡ 0</span><span>💬 0</span><span>↗ Share</span></div></article>';
+      '<div class="actions-line"><span>♡</span><span>💬</span><span>↗ Share</span>' + ownerActions + '</div></article>';
   }
 
-  function renderCommunityPosts(){
+  async function renderCommunityPosts(){
     if(!activeCommunityId) return;
     const community = allCommunities().find(c => c.id === activeCommunityId);
-    if(!canViewCommunity(community)){ $('communityPostList').innerHTML = '<div class="empty-state">🔒 This community is private. Join to see posts.</div>'; return; }
-    const posts = loadJSON('danceSocialPosts', []).filter(p => p.communityId === activeCommunityId);
-    const seeded = activeCommunityId === 'lindy-istanbul' ? [
-      {type:'Question',text:'What are you working on this week: swing-out, musicality or solo jazz?',communityName:'Lindy Hop Istanbul',profile:{...demoUsers.trainerbot,name:'DanceTrainer · BOT'}},
-      {type:'Post',text:'Friday social roll call: who is heading to Kadıköy?',communityName:'Lindy Hop Istanbul',profile:demoUsers.ayse}
-    ] : [];
-    const all = [...posts, ...seeded];
-    $('communityPostList').innerHTML = all.length
-      ? all.map(postCardHtml).join('')
-      : '<div class="empty-state">No posts yet. Start the first conversation in ' + escapeHtml(community ? community.name : 'this community') + '.</div>';
+    if(!community) return;
+    if(!canViewCommunity(community)){
+      $('communityPostList').innerHTML = '<div class="empty-state">🔒 This community is private. Join to see posts.</div>';
+      return;
+    }
+
+    $('communityPostList').innerHTML = '<div class="empty-state">Loading community posts…</div>';
+    const { data, error } = await supabaseClient
+      .from('posts')
+      .select('id,author_id,community_id,post_type,body,link_url,media_url,visibility,created_at,updated_at,profiles!posts_author_id_fkey(id,username,display_name,city,bio,role,privacy,avatar_url),communities(id,name,slug)')
+      .eq('community_id', activeCommunityId)
+      .order('created_at',{ascending:false})
+      .limit(50);
+
+    if(error){
+      console.error(error);
+      $('communityPostList').innerHTML = '<div class="error">' + escapeHtml(error.message) + '</div>';
+      return;
+    }
+
+    const posts = (data || []).map(normalizeDbPost);
+    posts.forEach(post => {
+      const existing = loadedPosts.findIndex(x => x.id === post.id);
+      if(existing >= 0) loadedPosts[existing] = post;
+      else loadedPosts.push(post);
+    });
+
+    $('communityPostList').innerHTML = posts.length
+      ? posts.map(postCardHtml).join('')
+      : '<div class="empty-state">No posts yet. Start the first conversation in ' + escapeHtml(community.name) + '.</div>';
+
     $('communityPostList').querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
+    $('communityPostList').querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
+    $('communityPostList').querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
   }
 
   function renderCommunityEvents(){
@@ -836,18 +969,56 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       '<p class="hint">No community events yet.</p>');
   }
 
-  function renderCommunityMembers(){
+  async function renderCommunityMembers(){
     if(!activeCommunityId) return;
-    const c = allCommunities().find(x => x.id === activeCommunityId);
-    const people = [
-      currentProfile ? {...currentProfile,username:currentUsername()} : {name:'Test Dancer',username:'test',role:'dancer'},
-      demoUsers.ayse,
-      demoUsers.mert,
-      (c && c.creator && c.creator !== 'test') ? (profileByUsername(c.creator) || {name:'@' + c.creator,username:c.creator,role:'dancer'}) : demoUsers.deniz
-    ];
-    $('communityMembersTab').innerHTML = '<h3>Members</h3><div class="member-list">' +
-      people.map(person => '<div class="member"><div class="mini">' + escapeHtml((person.name || 'D').charAt(0).toUpperCase()) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(person.username || '') + '">' + escapeHtml(person.name || 'Dancer') + '</button><div class="hint" style="margin:2px 0 0">' + escapeHtml(person.role || 'dancer') + '</div></div></div>').join('') +
-      '</div>';
+    const community = allCommunities().find(x => x.id === activeCommunityId);
+    if(!community) return;
+
+    if(!canViewCommunity(community)){
+      $('communityMembersTab').innerHTML = '<h3>Members</h3><p class="hint">Join this private community to see its member list.</p>';
+      return;
+    }
+
+    $('communityMembersTab').innerHTML = '<h3>Members</h3><p class="hint">Loading members…</p>';
+    const { data, error } = await supabaseClient
+      .from('community_members')
+      .select('community_id,user_id,role,status,joined_at,profiles!community_members_user_id_fkey(id,username,display_name,city,role,privacy,avatar_url)')
+      .eq('community_id', activeCommunityId)
+      .eq('status','active')
+      .order('joined_at',{ascending:true});
+
+    if(error){
+      console.error(error);
+      $('communityMembersTab').innerHTML = '<h3>Members</h3><p class="error">' + escapeHtml(error.message) + '</p>';
+      return;
+    }
+
+    const members = (data || []).map(row => {
+      const p = row.profiles || {};
+      const profile = {
+        id:p.id || row.user_id,
+        username:p.username || '',
+        name:p.display_name || 'Dancer',
+        city:p.city || '',
+        role:p.role || 'dancer',
+        privacy:p.privacy || 'public',
+        dances:[]
+      };
+      if(profile.username) realProfilesByUsername[profile.username] = profile;
+      return {...profile,communityRole:row.role};
+    });
+
+    communityMembersCache.set(activeCommunityId, members);
+    community.members = members.length;
+    const count = $('communityMemberCount');
+    if(count) count.textContent = members.length + ' members';
+
+    $('communityMembersTab').innerHTML = '<h3>Members</h3>' +
+      (members.length
+        ? '<div class="member-list">' + members.map(person =>
+          '<div class="member"><div class="mini">' + escapeHtml((person.name || 'D').charAt(0).toUpperCase()) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(person.username || '') + '">' + escapeHtml(person.name || 'Dancer') + '</button><div class="hint" style="margin:2px 0 0">' + escapeHtml(person.communityRole || person.role || 'member') + '</div></div></div>'
+        ).join('') + '</div>'
+        : '<p class="hint">No active members yet.</p>');
     $('communityMembersTab').querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
   }
 
@@ -861,7 +1032,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       '<p class="hint"><strong>Dance / topic:</strong> ' + escapeHtml(c.dance || 'General dance') + '<br>' +
       '<strong>City:</strong> ' + escapeHtml(c.city || 'Global') + '<br>' +
       '<strong>Privacy:</strong> ' + escapeHtml((c.privacy || 'public').toUpperCase()) + '<br>' +
-      '<strong>Created by:</strong> ' + escapeHtml(c.creator ? '@' + c.creator : 'Dance Social') + '</p>';
+      '<strong>Created by:</strong> ' + escapeHtml(c.creator ? '@' + c.creator : (c.creatorName || 'Dance Social')) + '</p>';
   }
 
   function openProfile(){
@@ -1014,9 +1185,13 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function renderDestinationOptions(){
     const select = $('postDestination');
     if(!select) return;
-    select.innerHTML = '<option value="profile">My profile</option>';
-    select.value = 'profile';
-    select.title = 'Community posting will switch to Supabase when communities are migrated.';
+    const previous = select.value || 'profile';
+    const destinations = allCommunities().filter(canPostToCommunity);
+    select.innerHTML = '<option value="profile">My profile</option>' +
+      destinations.map(c => '<option value="community:' + escapeHtml(c.id) + '">' + escapeHtml(c.name) + '</option>').join('');
+    if([...select.options].some(o => o.value === previous)) select.value = previous;
+    else select.value = 'profile';
+    select.title = 'Post to your profile or a community you belong to.';
   }
 
   function normalizeDbPost(row){
@@ -1064,6 +1239,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(error){ toast(error.message); return; }
     toast('Post updated');
     await renderPosts();
+    if(activeCommunityId) await renderCommunityPosts();
   }
 
   async function deletePost(postId){
@@ -1074,6 +1250,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(error){ toast(error.message); return; }
     toast('Post deleted');
     await renderPosts();
+    if(activeCommunityId) await renderCommunityPosts();
   }
 
   async function renderPosts(){
@@ -1233,9 +1410,17 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const text = $('composerInput').value.trim();
     if(!text){ toast('Write something first.'); return; }
     if(!currentSession || !currentProfile){ toast('Sign in first.'); return; }
-    if($('postDestination').value !== 'profile'){
-      toast('Community posting will move to Supabase in the community migration.');
-      return;
+
+    const destination = $('postDestination').value;
+    let communityId = null;
+    let community = null;
+    if(destination.startsWith('community:')){
+      communityId = destination.slice('community:'.length);
+      community = allCommunities().find(c => c.id === communityId);
+      if(!community || !canPostToCommunity(community)){
+        toast('You need to join that community before posting.');
+        return;
+      }
     }
 
     const typeMap = {Post:'post',Question:'question',Poll:'poll',Photo:'photo',Link:'link',Event:'event'};
@@ -1245,9 +1430,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
     const { error } = await supabaseClient.from('posts').insert({
       author_id: currentProfile.id,
+      community_id: communityId,
       post_type: postType,
       body: text,
-      visibility: 'public'
+      visibility: communityId ? 'community' : 'public'
     });
 
     $('publishPostBtn').disabled = false;
@@ -1259,8 +1445,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     document.querySelectorAll('.post-type').forEach(x => x.style.background = '#f3f0e9');
     const defaultType = document.querySelector('.post-type[data-type="Post"]');
     if(defaultType) defaultType.style.background = '#ded9cf';
-    toast('Post published');
+    toast(community ? 'Posted to ' + community.name : 'Post published');
     await renderPosts();
+    if(activeCommunityId) await renderCommunityPosts();
   });
 
 
@@ -1359,37 +1546,84 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   });
 
   $('backHomeBtn').addEventListener('click', closeCommunityView);
-  $('communityJoinBtn').addEventListener('click', () => {
-    if(!activeCommunityId) return;
-    const joined = !isJoined(activeCommunityId);
-    setJoined(activeCommunityId, joined);
-    updateJoinButton();
-    const c = allCommunities().find(x => x.id === activeCommunityId);
-    if(c) openCommunity(activeCommunityId);
-    toast(joined ? 'Joined community' : 'Left community');
+  $('communityJoinBtn').addEventListener('click', async () => {
+    if(!activeCommunityId || !currentProfile) return;
+    const community = allCommunities().find(x => x.id === activeCommunityId);
+    if(!community || isCommunityOwner(activeCommunityId)) return;
+
+    const membership = membershipFor(activeCommunityId);
+    $('communityJoinBtn').disabled = true;
+
+    if(membership){
+      const { error } = await supabaseClient
+        .from('community_members')
+        .delete()
+        .eq('community_id', activeCommunityId)
+        .eq('user_id', currentProfile.id);
+      if(error){
+        $('communityJoinBtn').disabled = false;
+        toast(error.message);
+        return;
+      }
+      communityMemberships.delete(activeCommunityId);
+      toast(membership.status === 'pending' ? 'Join request cancelled' : 'Left community');
+      await refreshCommunities();
+      if(community.privacy !== 'public' && !canViewCommunity(community)){
+        closeCommunityView();
+        return;
+      }
+    } else {
+      const status = community.privacy === 'public' ? 'active' : 'pending';
+      const { data, error } = await supabaseClient
+        .from('community_members')
+        .insert({
+          community_id: activeCommunityId,
+          user_id: currentProfile.id,
+          role:'member',
+          status,
+          joined_at: status === 'active' ? new Date().toISOString() : null
+        })
+        .select('community_id,user_id,role,status,joined_at')
+        .single();
+
+      if(error){
+        $('communityJoinBtn').disabled = false;
+        toast(error.message);
+        return;
+      }
+      communityMemberships.set(activeCommunityId, data);
+      toast(status === 'active' ? 'Joined community' : 'Join request sent');
+      await refreshCommunities();
+    }
+
+    $('communityJoinBtn').disabled = false;
+    await openCommunity(activeCommunityId);
   });
   document.querySelectorAll('.community-tab').forEach(btn => btn.addEventListener('click', () => selectCommunityTab(btn.dataset.communityTab)));
 
-  $('communityPublishBtn').addEventListener('click', () => {
-    if(!activeCommunityId) return;
+  $('communityPublishBtn').addEventListener('click', async () => {
+    if(!activeCommunityId || !currentProfile) return;
     const text = $('communityComposerInput').value.trim();
     if(!text){ toast('Write something first.'); return; }
     const community = allCommunities().find(c => c.id === activeCommunityId);
-    if(!community) return;
-    const posts = loadJSON('danceSocialPosts', []);
-    posts.unshift({
-      id:'post-' + Date.now(),
-      type:'Post',
-      text,
-      destination:'community',
-      communityId:community.id,
-      communityName:community.name,
-      profile:currentProfile || {name:'Test Dancer'}
+    if(!community || !canPostToCommunity(community)){ toast('Join this community before posting.'); return; }
+
+    $('communityPublishBtn').disabled = true;
+    $('communityPublishBtn').textContent = 'Publishing…';
+    const { error } = await supabaseClient.from('posts').insert({
+      author_id: currentProfile.id,
+      community_id: community.id,
+      post_type:'post',
+      body:text,
+      visibility:'community'
     });
-    saveJSON('danceSocialPosts', posts);
+    $('communityPublishBtn').disabled = false;
+    $('communityPublishBtn').textContent = 'Publish';
+
+    if(error){ toast(error.message); return; }
     $('communityComposerInput').value = '';
-    renderCommunityPosts();
-    renderPosts();
+    await renderCommunityPosts();
+    await renderPosts();
     toast('Posted to ' + community.name);
   });
 
@@ -1429,22 +1663,46 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   $('cancelCommunity').addEventListener('click', closeCommunityModal);
   $('communityModal').addEventListener('click', e => { if(e.target === $('communityModal')) closeCommunityModal(); });
 
-  $('saveCommunity').addEventListener('click', () => {
+  $('saveCommunity').addEventListener('click', async () => {
     const name = $('communityName').value.trim();
     const dance = $('communityDance').value.trim();
     const city = $('communityCity').value.trim();
     const description = $('communityDescription').value.trim();
     const privacy = $('communityPrivacy').value;
-    if(!name){ toast('Community needs a name.'); return; }
-    const communities = loadJSON('danceSocialCommunities', []);
-    const community = {id:slugify(name),name,dance,city,description,privacy,members:1,creator:(currentProfile && currentProfile.username) || 'test'};
-    communities.unshift(community);
-    saveJSON('danceSocialCommunities', communities);
-    $('communityName').value = ''; $('communityDance').value = ''; $('communityCity').value = ''; $('communityDescription').value = ''; $('communityPrivacy').value = 'public';
-    renderCommunities(); renderDestinationOptions(); renderEventCommunityOptions();
-    $('postDestination').value = 'community:' + community.id;
+    if(!name || !currentProfile){ toast('Community needs a name.'); return; }
+
+    const danceStyleId = resolveDanceStyleId(dance);
+    $('saveCommunity').disabled = true;
+    $('saveCommunity').textContent = 'Creating…';
+
+    const { data, error } = await supabaseClient
+      .from('communities')
+      .insert({
+        owner_id: currentProfile.id,
+        slug: slugify(name),
+        name,
+        dance_style_id: danceStyleId,
+        city: city || null,
+        description: description || null,
+        privacy
+      })
+      .select('id,owner_id,slug,name,description,dance_style_id,city,privacy,avatar_url,cover_url,created_at')
+      .single();
+
+    $('saveCommunity').disabled = false;
+    $('saveCommunity').textContent = 'Create community';
+    if(error){ toast(error.message); return; }
+
+    $('communityName').value = '';
+    $('communityDance').value = '';
+    $('communityCity').value = '';
+    $('communityDescription').value = '';
+    $('communityPrivacy').value = 'public';
     closeCommunityModal();
-    openCommunity(community.id, true);
+
+    await refreshCommunities();
+    $('postDestination').value = 'community:' + data.id;
+    await openCommunity(data.id, true);
     toast(name + ' created');
   });
 
