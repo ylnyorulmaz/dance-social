@@ -1120,6 +1120,16 @@
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openProfile(); }
   });
   $('topHomeLink').addEventListener('click', e => { e.preventDefault(); closeProfileView(); setTopNavActive('home'); });
+  $('topCommunitiesLink').addEventListener('click', e => {
+    e.preventDefault();
+    viewedProfile = currentProfile;
+    activeCommunityId = null;
+    $('profileView').classList.add('hidden');
+    $('communityView').classList.add('hidden');
+    $('homeView').classList.remove('hidden');
+    setTopNavActive('communities');
+    setTimeout(() => $('communitiesPanel').scrollIntoView({behavior:'smooth',block:'center'}), 50);
+  });
   $('sideHomeLink').addEventListener('click', e => { e.preventDefault(); closeProfileView(); });
   $('topCreatePostBtn').addEventListener('click', () => {
     viewedProfile = currentProfile;
