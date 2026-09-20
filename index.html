@@ -64,7 +64,10 @@
     .composer{padding:18px}.composer textarea{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px 14px;min-height:92px;resize:vertical;outline:none}.composer textarea:focus,.composer select:focus{border-color:rgba(239,79,50,.7);box-shadow:0 0 0 3px rgba(239,79,50,.08)}.composer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.composer-head strong{font-size:14px}.composer select{max-width:240px;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:#fff}.composer-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.composer-actions button{border:0;background:#f3f0e9;padding:8px 10px;border-radius:999px;font-size:12px;font-weight:800}.composer-actions .publish{margin-left:auto;background:var(--ink);color:white;padding:10px 16px}
     .feed-card{margin-bottom:14px;padding:18px}.meta{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}.mini{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#ece8df;font-weight:850;color:var(--ink)}
     .feed-card h3{font-size:20px;letter-spacing:-.025em;margin:12px 0 7px}.feed-card p{color:#48453f;line-height:1.55}.badge{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-    .actions-line{display:flex;gap:18px;color:var(--muted);font-size:13px;margin-top:14px}
+    .actions-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:14px}
+    .interaction-btn,.actions-line button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;padding:6px 8px;border-radius:999px;cursor:pointer}.interaction-btn:hover,.actions-line button:hover{background:#f2efe8;color:var(--ink)}.interaction-btn.active{background:#fff0ed;color:#c83d28}
+    .comments-block{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}.comment-row{display:flex;gap:9px;padding:8px 0}.comment-row+.comment-row{border-top:1px solid #f0ede7}.comment-copy{flex:1;min-width:0}.comment-copy strong,.comment-copy .user-link{font-size:12px}.comment-copy p{font-size:13px;margin:3px 0 0;line-height:1.45}.comment-meta{font-size:10px;color:var(--muted)}.comment-actions{display:flex;gap:3px}.comment-actions button{border:0;background:transparent;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 5px}.comment-form{display:flex;gap:8px;margin-top:8px}.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:#fbfaf7}.comment-form button{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:8px 12px;font-weight:800;cursor:pointer}.comments-more{font-size:11px;color:var(--muted);margin:4px 0}
+    .invite-row{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.invite-row:first-child{border-top:0}.invite-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:850;letter-spacing:.04em;flex:1;word-break:break-all}.invite-meta{font-size:10px;color:var(--muted);margin-top:3px}.invite-copy{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-weight:800;cursor:pointer}
     .right-card{padding:18px;margin-bottom:14px}.right-card h3{margin:0 0 14px;font-size:17px}.event{padding:12px 0;border-top:1px solid var(--line)}.event:first-of-type{border-top:0}.event strong{display:block}.event span{font-size:12px;color:var(--muted)}.community-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.community-row:first-child{border-top:0}.community-icon{width:36px;height:36px;border-radius:12px;background:#f0ede5;display:grid;place-items:center;font-weight:900}.community-copy{min-width:0;flex:1}.community-copy strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.community-copy span{font-size:11px;color:var(--muted)}.community-open{border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.modal-backdrop{position:fixed;inset:0;background:rgba(20,18,15,.46);display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(520px,100%);background:#fff;border-radius:26px;border:1px solid var(--line);box-shadow:var(--shadow);padding:24px}.modal-head{display:flex;align-items:center;gap:14px}.modal-head h2{margin:0;font-size:27px;letter-spacing:-.035em}.modal-head button{margin-left:auto;border:0;background:#f3f0e9;width:36px;height:36px;border-radius:50%;font-size:19px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;z-index:70;box-shadow:var(--shadow)}.post-destination{color:var(--blue);font-weight:800}.empty{font-size:13px;color:var(--muted);padding:6px 0}
     .community-page{display:flex;flex-direction:column;gap:14px}.community-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.community-cover{height:150px;background:linear-gradient(135deg,#ef4f32 0%,#ef4f32 34%,#2647d7 34%,#2647d7 67%,#2f9b72 67%);opacity:.92}.community-body{padding:22px}.community-topline{display:flex;align-items:flex-start;gap:16px}.community-big-icon{width:72px;height:72px;border-radius:20px;background:#f3f0e9;display:grid;place-items:center;font-size:30px;font-weight:900;margin-top:-56px;border:5px solid #fff}.community-title-wrap{min-width:0;flex:1}.community-title-wrap h2{font-size:32px;letter-spacing:-.04em;margin:0 0 4px}.community-meta{color:var(--muted);font-size:13px}.community-description{color:#4b4740;line-height:1.6;margin:16px 0 0}.community-actions{display:flex;gap:9px;flex-wrap:wrap}.back-link{border:0;background:transparent;color:var(--muted);font-weight:800;padding:0;margin-bottom:2px;text-align:left}.community-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.community-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.community-tab.active{background:#f1eee7;color:var(--ink)}.community-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-panel h3{margin:0 0 12px}.member-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.member{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px}.member .mini{flex:0 0 auto}.community-composer{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-composer textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:14px;padding:13px 14px;resize:vertical;outline:none}.community-composer textarea:focus{border-color:rgba(239,79,50,.7);box-shadow:0 0 0 3px rgba(239,79,50,.08)}.community-composer-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}.community-post-list .empty-state{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--muted)}.small-stat{display:inline-flex;align-items:center;gap:5px;margin-right:12px}.community-row .community-copy{cursor:pointer}.community-row-actions{display:flex;gap:6px}.community-row-actions button{border:0;background:#f3f0e9;border-radius:999px;padding:7px 9px;font-size:11px;font-weight:800}
     .profile-page{display:flex;flex-direction:column;gap:14px}.profile-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.profile-cover{height:150px;background:linear-gradient(120deg,#2647d7 0%,#2647d7 38%,#ef4f32 38%,#ef4f32 70%,#2f9b72 70%);opacity:.88}.profile-body{padding:22px}.profile-head{display:flex;align-items:flex-start;gap:16px}.profile-avatar-large{width:92px;height:92px;border-radius:50%;background:var(--accent);color:white;border:6px solid #fff;display:grid;place-items:center;font-size:36px;font-weight:900;margin-top:-67px;flex:0 0 auto}.profile-identity{min-width:0;flex:1}.profile-identity h2{font-size:34px;letter-spacing:-.045em;margin:0 0 3px}.profile-handle{color:var(--muted);font-size:14px}.profile-location{color:var(--muted);font-size:13px;margin-top:6px}.profile-actions{display:flex;gap:8px}.profile-stats{display:flex;gap:22px;flex-wrap:wrap;margin:20px 0 12px}.profile-stat strong{display:block;font-size:20px}.profile-stat span{font-size:12px;color:var(--muted)}.profile-dances{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.profile-dances span{padding:7px 10px;border-radius:999px;background:#f2efe8;font-size:12px;font-weight:800}.profile-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.profile-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.profile-tab.active{background:#f1eee7;color:var(--ink)}.profile-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.profile-panel h3{margin:0 0 12px}.profile-community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-community-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.profile-community-card strong{display:block;margin-bottom:4px}.profile-community-card span{font-size:12px;color:var(--muted)}.profile-community-card button{margin-top:10px;border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.profile-about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.about-item{border:1px solid var(--line);border-radius:14px;padding:13px}.about-item span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:4px}.clickable-profile{cursor:pointer}.avatar{cursor:pointer}.user-link{border:0;background:transparent;padding:0;font:inherit;font-weight:800;color:inherit;cursor:pointer;text-align:left}.user-link:hover{text-decoration:underline}.relationship-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:#f1eee7;font-size:11px;font-weight:850;color:var(--muted);margin-top:7px}.relationship-badge.connected{background:#e8f5ef;color:#19704d}.relationship-badge.follows{background:#eef1ff;color:#2647d7}
@@ -223,6 +226,7 @@
         <h2>Set up your dance profile.</h2>
         <p class="sub">Your account is verified. Add the basics before entering the community.</p>
         <div id="profileSetupError" class="error hidden" role="alert"></div>
+        <div class="field"><label for="setupInviteCode">Invitation code</label><input id="setupInviteCode" autocomplete="one-time-code" placeholder="DS-XXXXXXXXXX" required></div>
         <div class="row">
           <div class="field"><label for="setupName">Name</label><input id="setupName" maxlength="80" required></div>
           <div class="field"><label for="setupCity">City</label><input id="setupCity" placeholder="Istanbul" required></div>
@@ -264,7 +268,7 @@
   <div class="app-grid">
     <aside class="side-left">
       <div class="side-card menu">
-        <a class="active" id="sideHomeLink" href="#feed">Home</a><a href="#communitiesPanel">Communities</a><a id="sideEventsLink" href="#events">Events</a><a>People</a><a id="sideProfileLink" href="#profileView" data-action="open-profile">Profile</a><a>Tools</a><a>Invites</a><button id="createCommunityBtn" class="primary full" style="margin-top:12px">+ Create community</button><button id="createEventBtn" class="secondary full">+ Create event</button>
+        <a class="active" id="sideHomeLink" href="#feed">Home</a><a href="#communitiesPanel">Communities</a><a id="sideEventsLink" href="#events">Events</a><a>People</a><a id="sideProfileLink" href="#profileView" data-action="open-profile">Profile</a><a>Tools</a><a id="sideInvitesLink" href="#invites">Invites</a><button id="createCommunityBtn" class="primary full" style="margin-top:12px">+ Create community</button><button id="createEventBtn" class="secondary full">+ Create event</button>
       </div>
     </aside>
 
@@ -487,6 +491,17 @@
     <div class="modal-actions"><button id="cancelEvent" class="secondary">Cancel</button><button id="saveEvent" class="primary">Create event</button></div>
   </div>
 </div>
+<div id="inviteModal" class="modal-backdrop hidden">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="inviteModalTitle">
+    <div class="modal-head">
+      <div><span class="eyebrow">Private beta</span><h2 id="inviteModalTitle">Your invitations</h2></div>
+      <button id="closeInviteModal" aria-label="Close">×</button>
+    </div>
+    <p class="sub">You can keep up to 3 active single-use invitations. Each invitation expires after 30 days.</p>
+    <button id="generateInviteBtn" class="primary full" type="button">Generate invitation</button>
+    <div id="inviteList" style="margin-top:16px"></div>
+  </div>
+</div>
 <div id="toast" class="toast hidden"></div>
 
 <script type="module">
@@ -505,6 +520,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   let activeCommunityId = null;
   let viewedProfile = null;
   let loadedPosts = [];
+  let commentsByPost = new Map();
+  let reactionsByPost = new Map();
   let loadedEvents = [];
   let editingEventId = null;
   let outgoingFollows = new Map();
@@ -752,6 +769,17 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     $('loginError').classList.add('hidden');
   }
 
+  async function functionErrorMessage(error, fallback='Request failed.'){
+    if(!error) return fallback;
+    try{
+      if(error.context && typeof error.context.json === 'function'){
+        const payload = await error.context.json();
+        if(payload && payload.error) return payload.error;
+      }
+    }catch(e){}
+    return error.message || fallback;
+  }
+
   function profileToUi(row){
     return {
       id: row.id,
@@ -966,7 +994,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const author = profile.username
       ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
       : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
-    const own = post.authorId === (currentProfile && currentProfile.id);
+    const own = post.authorId === currentProfile?.id;
     const ownerActions = own
       ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
       : '';
@@ -975,7 +1003,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       escapeHtml(post.communityName || 'Community') + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
       '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
-      '<div class="actions-line"><span>♡</span><span>💬</span><span>↗ Share</span>' + ownerActions + '</div></article>';
+      postInteractionsHtml(post, ownerActions) + '</article>';
   }
 
   async function renderCommunityPosts(){
@@ -1002,6 +1030,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     const posts = (data || []).map(normalizeDbPost);
+    await refreshPostInteractions([...new Set([...loadedPosts.map(p => p.id), ...posts.map(p => p.id)])]);
     posts.forEach(post => {
       const existing = loadedPosts.findIndex(x => x.id === post.id);
       if(existing >= 0) loadedPosts[existing] = post;
@@ -1015,6 +1044,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     $('communityPostList').querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
     $('communityPostList').querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
     $('communityPostList').querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
+    bindPostInteractions($('communityPostList'));
   }
 
   function renderCommunityEvents(){
@@ -1160,16 +1190,166 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     return seededPostsFor(target.username);
   }
 
+  function postComments(postId){ return commentsByPost.get(postId) || []; }
+  function postReactions(postId){ return reactionsByPost.get(postId) || []; }
+
+  async function refreshPostInteractions(postIds){
+    const ids = [...new Set((postIds || []).filter(Boolean))];
+    if(!ids.length){
+      commentsByPost = new Map();
+      reactionsByPost = new Map();
+      return;
+    }
+
+    const [{ data: comments, error: commentError }, { data: reactions, error: reactionError }] = await Promise.all([
+      supabaseClient
+        .from('comments')
+        .select('id,post_id,author_id,parent_id,body,created_at,updated_at,profiles!comments_author_id_fkey(id,username,display_name,avatar_url)')
+        .in('post_id', ids)
+        .order('created_at',{ascending:true}),
+      supabaseClient
+        .from('reactions')
+        .select('post_id,user_id,reaction_type,created_at')
+        .in('post_id', ids)
+    ]);
+
+    if(commentError) console.error(commentError);
+    if(reactionError) console.error(reactionError);
+
+    const nextComments = new Map(ids.map(id => [id, []]));
+    (comments || []).forEach(row => {
+      const p = row.profiles || {};
+      const profile = {
+        id:p.id || row.author_id,
+        username:p.username || '',
+        name:p.display_name || 'Dancer',
+        avatarUrl:p.avatar_url || ''
+      };
+      if(profile.username && !realProfilesByUsername[profile.username]){
+        realProfilesByUsername[profile.username] = {...profile,city:'',role:'dancer',privacy:'public',bio:'',dances:[]};
+      }
+      nextComments.get(row.post_id)?.push({
+        id:row.id,postId:row.post_id,authorId:row.author_id,parentId:row.parent_id,
+        body:row.body,createdAt:row.created_at,updatedAt:row.updated_at,profile
+      });
+    });
+
+    const nextReactions = new Map(ids.map(id => [id, []]));
+    (reactions || []).forEach(row => nextReactions.get(row.post_id)?.push(row));
+
+    commentsByPost = nextComments;
+    reactionsByPost = nextReactions;
+  }
+
+  function postInteractionsHtml(post, ownerActions=''){
+    const reactions = postReactions(post.id);
+    const comments = postComments(post.id);
+    const mine = reactions.find(r => r.user_id === currentProfile?.id);
+    const visibleComments = comments.slice(-3);
+    const more = comments.length > 3 ? '<div class="comments-more">' + (comments.length - 3) + ' earlier comment' + (comments.length - 3 === 1 ? '' : 's') + '</div>' : '';
+    const commentHtml = visibleComments.map(comment => {
+      const own = comment.authorId === currentProfile?.id;
+      const author = comment.profile?.username
+        ? '<button class="user-link" data-user-username="' + escapeHtml(comment.profile.username) + '">' + escapeHtml(comment.profile.name || 'Dancer') + '</button>'
+        : '<strong>' + escapeHtml(comment.profile?.name || 'Dancer') + '</strong>';
+      return '<div class="comment-row">' +
+        '<div class="mini" style="width:26px;height:26px;font-size:10px">' + escapeHtml((comment.profile?.name || 'D').charAt(0).toUpperCase()) + '</div>' +
+        '<div class="comment-copy"><div>' + author + ' <span class="comment-meta">· ' + escapeHtml(postTimeLabel(comment.createdAt)) + '</span></div><p>' + escapeHtml(comment.body) + '</p></div>' +
+        (own ? '<div class="comment-actions"><button type="button" data-edit-comment="' + comment.id + '" data-post-id="' + post.id + '">Edit</button><button type="button" data-delete-comment="' + comment.id + '" data-post-id="' + post.id + '">Delete</button></div>' : '') +
+        '</div>';
+    }).join('');
+
+    return '<div class="actions-line">' +
+      '<button class="interaction-btn ' + (mine ? 'active' : '') + '" type="button" data-toggle-reaction="' + post.id + '">♥ ' + reactions.length + '</button>' +
+      '<button class="interaction-btn" type="button" data-focus-comment="' + post.id + '">💬 ' + comments.length + '</button>' +
+      '<span>↗ Share</span>' + ownerActions +
+      '</div><div class="comments-block">' + more + commentHtml +
+      '<form class="comment-form" data-comment-form="' + post.id + '"><input aria-label="Write a comment" maxlength="5000" placeholder="Write a comment…"><button type="submit">Reply</button></form></div>';
+  }
+
+  async function toggleReaction(postId){
+    if(!currentProfile) return;
+    const mine = postReactions(postId).find(r => r.user_id === currentProfile.id);
+    let result;
+    if(mine){
+      result = await supabaseClient.from('reactions').delete().eq('post_id',postId).eq('user_id',currentProfile.id);
+    }else{
+      result = await supabaseClient.from('reactions').insert({post_id:postId,user_id:currentProfile.id,reaction_type:'like'});
+    }
+    if(result.error){ toast(result.error.message); return; }
+    await refreshPostInteractions(loadedPosts.map(p => p.id));
+    renderPostsFromState();
+  }
+
+  async function addComment(postId, body){
+    if(!currentProfile) return;
+    const text = String(body || '').trim();
+    if(!text) return;
+    const { error } = await supabaseClient.from('comments').insert({
+      post_id:postId,
+      author_id:currentProfile.id,
+      body:text
+    });
+    if(error){ toast(error.message); return; }
+    await refreshPostInteractions(loadedPosts.map(p => p.id));
+    renderPostsFromState();
+  }
+
+  async function editComment(postId, commentId){
+    const comment = postComments(postId).find(c => c.id === commentId);
+    if(!comment || comment.authorId !== currentProfile?.id) return;
+    const next = window.prompt('Edit your comment', comment.body);
+    if(next === null) return;
+    const body = next.trim();
+    if(!body){ toast('Comment cannot be empty.'); return; }
+    const { error } = await supabaseClient.from('comments').update({body}).eq('id',commentId);
+    if(error){ toast(error.message); return; }
+    await refreshPostInteractions(loadedPosts.map(p => p.id));
+    renderPostsFromState();
+  }
+
+  async function deleteComment(postId, commentId){
+    const comment = postComments(postId).find(c => c.id === commentId);
+    if(!comment || comment.authorId !== currentProfile?.id) return;
+    if(!window.confirm('Delete this comment?')) return;
+    const { error } = await supabaseClient.from('comments').delete().eq('id',commentId);
+    if(error){ toast(error.message); return; }
+    await refreshPostInteractions(loadedPosts.map(p => p.id));
+    renderPostsFromState();
+  }
+
+  function bindPostInteractions(root){
+    if(!root) return;
+    root.querySelectorAll('[data-toggle-reaction]').forEach(btn => btn.addEventListener('click', () => toggleReaction(btn.dataset.toggleReaction)));
+    root.querySelectorAll('[data-focus-comment]').forEach(btn => btn.addEventListener('click', () => {
+      const form = root.querySelector('[data-comment-form="' + btn.dataset.focusComment + '"]');
+      form?.querySelector('input')?.focus();
+    }));
+    root.querySelectorAll('[data-comment-form]').forEach(form => form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const input = form.querySelector('input');
+      const value = input?.value || '';
+      if(input) input.value = '';
+      await addComment(form.dataset.commentForm, value);
+    }));
+    root.querySelectorAll('[data-edit-comment]').forEach(btn => btn.addEventListener('click', () => editComment(btn.dataset.postId, btn.dataset.editComment)));
+    root.querySelectorAll('[data-delete-comment]').forEach(btn => btn.addEventListener('click', () => deleteComment(btn.dataset.postId, btn.dataset.deleteComment)));
+  }
+
   function profilePostHtml(post){
     const destination = post.communityName
       ? '<button class="post-destination" data-profile-community-id="' + escapeHtml(post.communityId) + '" style="border:0;background:transparent;padding:0;cursor:pointer">' + escapeHtml(post.communityName) + '</button>'
       : '<span class="post-destination">Profile</span>';
-    const target = viewedProfile || currentProfile || {};
+    const target = post.profile || viewedProfile || currentProfile || {};
+    const own = post.authorId === currentProfile?.id;
+    const ownerActions = own
+      ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
+      : '';
     return '<article class="feed-card">' +
-      '<div class="meta"><div class="mini">' + escapeHtml((target.name || 'D').charAt(0).toUpperCase()) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(target.username || currentUsername()) + '">' + escapeHtml(target.name || 'Dancer') + '</button><br><span>' + destination + ' · just now</span></div></div>' +
+      '<div class="meta"><div class="mini">' + escapeHtml((target.name || 'D').charAt(0).toUpperCase()) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(target.username || currentUsername()) + '">' + escapeHtml(target.name || 'Dancer') + '</button><br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
       '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
-      '<div class="actions-line"><span>♡ 0</span><span>💬 0</span><span>↗ Share</span></div></article>';
+      postInteractionsHtml(post, ownerActions) + '</article>';
   }
 
   function renderProfilePage(){
@@ -1238,6 +1418,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
         : '<div class="profile-panel"><h3>No posts yet</h3><p class="sub" style="margin:0">Profile and community posts will appear here.</p></div>');
     $('profilePostsTab').querySelectorAll('[data-profile-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.profileCommunityId)));
     $('profilePostsTab').querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
+    $('profilePostsTab').querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
+    $('profilePostsTab').querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
+    bindPostInteractions($('profilePostsTab'));
 
     $('profileCommunitiesTab').innerHTML = !fullAccess
       ? '<h3>Private profile</h3><p class="sub" style="margin:0">Communities are hidden until the follow request is accepted.</p>'
@@ -1350,6 +1533,43 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(activeCommunityId) await renderCommunityPosts();
   }
 
+  function renderPostsFromState(){
+    const host = $('userPosts');
+    if(!host) return;
+    if(!loadedPosts.length){
+      host.innerHTML = '<article class="feed-card"><h3>Your live feed starts here.</h3><p>Create the first Supabase-backed post above.</p></article>';
+      renderProfilePage();
+      return;
+    }
+
+    host.innerHTML = loadedPosts.map(post => {
+      const profile = post.profile || {};
+      const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
+      const destination = post.communityName
+        ? '<span class="post-destination">' + escapeHtml(post.communityName) + '</span>'
+        : '<span class="post-destination">Profile</span>';
+      const author = profile.username
+        ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
+        : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
+      const own = post.authorId === currentProfile?.id;
+      const ownerActions = own
+        ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
+        : '';
+      return '<article class="feed-card">' +
+        '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
+        '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
+        '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
+        postInteractionsHtml(post, ownerActions) + '</article>';
+    }).join('');
+
+    host.querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
+    host.querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
+    host.querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
+    bindPostInteractions(host);
+    renderProfilePage();
+    if(activeCommunityId) renderCommunityPosts();
+  }
+
   async function renderPosts(){
     const host = $('userPosts');
     if(!host || !currentSession) return;
@@ -1367,36 +1587,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     loadedPosts = (data || []).map(normalizeDbPost);
-    if(!loadedPosts.length){
-      host.innerHTML = '<article class="feed-card"><h3>Your live feed starts here.</h3><p>Create the first Supabase-backed post above.</p></article>';
-      renderProfilePage();
-      return;
-    }
-
-    host.innerHTML = loadedPosts.map(post => {
-      const profile = post.profile || {};
-      const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
-      const destination = post.communityName
-        ? '<span class="post-destination">' + escapeHtml(post.communityName) + '</span>'
-        : '<span class="post-destination">Profile</span>';
-      const author = profile.username
-        ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
-        : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
-      const own = post.authorId === (currentProfile && currentProfile.id);
-      const ownerActions = own
-        ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
-        : '';
-      return '<article class="feed-card">' +
-        '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
-        '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
-        '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
-        '<div class="actions-line"><span>♡</span><span>💬</span><span>↗ Share</span>' + ownerActions + '</div></article>';
-    }).join('');
-
-    host.querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
-    host.querySelectorAll('[data-edit-post]').forEach(btn => btn.addEventListener('click', () => editPost(btn.dataset.editPost)));
-    host.querySelectorAll('[data-delete-post]').forEach(btn => btn.addEventListener('click', () => deletePost(btn.dataset.deletePost)));
-    renderProfilePage();
+    await refreshPostInteractions(loadedPosts.map(post => post.id));
+    renderPostsFromState();
   }
 
   function normalizeEvent(row){
@@ -1544,6 +1736,64 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     bindEventActions(wrap);
   }
 
+  function openInviteModal(){
+    if(!currentProfile) return;
+    $('inviteModal').classList.remove('hidden');
+    refreshInvitations();
+  }
+
+  function closeInviteModal(){ $('inviteModal').classList.add('hidden'); }
+
+  async function refreshInvitations(){
+    if(!currentProfile) return;
+    const host = $('inviteList');
+    host.innerHTML = '<p class="hint">Loading invitations…</p>';
+    const { data, error } = await supabaseClient
+      .from('invitations')
+      .select('id,code,status,use_count,max_uses,expires_at,accepted_at,created_at')
+      .eq('inviter_id', currentProfile.id)
+      .order('created_at',{ascending:false});
+
+    if(error){
+      host.innerHTML = '<p class="error">' + escapeHtml(error.message) + '</p>';
+      return;
+    }
+
+    const rows = data || [];
+    const active = rows.filter(row => row.status === 'pending' && (!row.expires_at || new Date(row.expires_at) > new Date()) && row.use_count < row.max_uses).length;
+    $('generateInviteBtn').disabled = active >= 3;
+    $('generateInviteBtn').textContent = active >= 3 ? '3 active invitations reached' : 'Generate invitation';
+
+    host.innerHTML = rows.length ? rows.map(row => {
+      const expiry = row.expires_at ? new Date(row.expires_at).toLocaleDateString() : 'No expiry';
+      return '<div class="invite-row"><div style="flex:1;min-width:0"><div class="invite-code">' + escapeHtml(row.code) + '</div><div class="invite-meta">' +
+        escapeHtml(row.status.toUpperCase()) + ' · expires ' + escapeHtml(expiry) +
+        '</div></div><button class="invite-copy" type="button" data-copy-invite="' + escapeHtml(row.code) + '">Copy</button></div>';
+    }).join('') : '<p class="hint">No invitations yet.</p>';
+
+    host.querySelectorAll('[data-copy-invite]').forEach(btn => btn.addEventListener('click', async () => {
+      try{
+        await navigator.clipboard.writeText(btn.dataset.copyInvite);
+        toast('Invitation copied');
+      }catch(e){
+        window.prompt('Copy invitation code', btn.dataset.copyInvite);
+      }
+    }));
+  }
+
+  async function generateInvitation(){
+    if(!currentProfile) return;
+    $('generateInviteBtn').disabled = true;
+    $('generateInviteBtn').textContent = 'Generating…';
+    const { data, error } = await supabaseClient.functions.invoke('create-invite',{body:{}});
+    if(error || !data?.ok){
+      toast(data?.error || await functionErrorMessage(error, 'Could not create invitation.'));
+    }else{
+      toast('Invitation created');
+    }
+    await refreshInvitations();
+  }
+
   function openCommunityModal(){
     $('communityModal').classList.remove('hidden');
     $('communityName').focus();
@@ -1573,6 +1823,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   $('completeProfileBtn').addEventListener('click', async () => {
     if(!currentSession || !currentSession.user) return;
+    const code = $('setupInviteCode').value.trim();
     const displayName = $('setupName').value.trim();
     const username = $('setupUsername').value.trim().toLowerCase().replace(/^@/,'');
     const city = $('setupCity').value.trim();
@@ -1581,35 +1832,29 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const errorEl = $('profileSetupError');
     errorEl.classList.add('hidden');
 
-    if(!displayName || !username || !city){
-      errorEl.textContent = 'Name, username and city are required.';
+    if(!code || !displayName || !username || !city){
+      errorEl.textContent = 'Invitation code, name, username and city are required.';
       errorEl.classList.remove('hidden');
       return;
     }
 
     $('completeProfileBtn').disabled = true;
-    $('completeProfileBtn').textContent = 'Creating profile…';
-    const { data, error } = await supabaseClient
-      .from('profiles')
-      .insert({
-        id: currentSession.user.id,
-        username,
-        display_name: displayName,
-        city,
-        role,
-        privacy
-      })
-      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
-      .single();
+    $('completeProfileBtn').textContent = 'Validating invitation…';
+
+    const { data, error } = await supabaseClient.functions.invoke('redeem-invite', {
+      body:{ code, displayName, username, city, role, privacy }
+    });
 
     $('completeProfileBtn').disabled = false;
     $('completeProfileBtn').textContent = 'Enter Dance Social';
-    if(error){
-      errorEl.textContent = error.code === '23505' ? 'That username is already taken.' : error.message;
+
+    if(error || !data?.ok || !data?.profile){
+      errorEl.textContent = data?.error || await functionErrorMessage(error, 'Could not redeem invitation.');
       errorEl.classList.remove('hidden');
       return;
     }
-    const profile = profileToUi(data);
+
+    const profile = profileToUi(data.profile);
     realProfilesByUsername[profile.username] = profile;
     showApp(profile);
   });
@@ -1941,6 +2186,11 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     await refreshEvents();
     toast(wasEdit ? 'Event updated' : title + ' created');
   });
+
+  $('sideInvitesLink').addEventListener('click', e => { e.preventDefault(); openInviteModal(); });
+  $('closeInviteModal').addEventListener('click', closeInviteModal);
+  $('inviteModal').addEventListener('click', e => { if(e.target === $('inviteModal')) closeInviteModal(); });
+  $('generateInviteBtn').addEventListener('click', generateInvitation);
 
   $('createCommunityBtn').addEventListener('click', openCommunityModal);
   $('createCommunityBtnRight').addEventListener('click', openCommunityModal);
