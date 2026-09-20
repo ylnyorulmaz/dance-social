@@ -57,7 +57,7 @@
     .top-create,.top-logout{border:0;border-radius:999px;font-weight:850;white-space:nowrap;transition:transform .16s ease,background .16s ease}
     .top-create{background:var(--ink);color:#fff;padding:10px 14px;font-size:12px}.top-create:hover{transform:translateY(-1px)}
     .top-logout{background:transparent;color:var(--muted);padding:10px 11px;font-size:11px}.top-logout:hover{background:#f1eee7;color:var(--ink)}
-    .avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:white;display:grid;place-items:center;font-weight:900;border:3px solid #fff;padding:0;cursor:pointer;appearance:none;box-shadow:0 0 0 1px var(--line);transition:transform .16s ease,box-shadow .16s ease}.avatar:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(239,79,50,.22)}.avatar.nav-active{box-shadow:0 0 0 2px var(--ink),0 7px 20px rgba(23,23,23,.12)}
+    .avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:white;display:grid;place-items:center;font-weight:900;border:3px solid #fff;padding:0;cursor:pointer;appearance:none;box-shadow:0 0 0 1px var(--line);transition:transform .16s ease,box-shadow .16s ease;overflow:hidden}.avatar:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(239,79,50,.22)}.avatar.nav-active{box-shadow:0 0 0 2px var(--ink),0 7px 20px rgba(23,23,23,.12)}
     .app-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:220px minmax(0,1fr) 300px;gap:22px;padding:28px}
     .side-card,.feed-card,.right-card{background:#fff;border:1px solid var(--line);border-radius:20px}
     .side-card{padding:12px}.menu a{display:block;padding:11px 12px;border-radius:12px;color:var(--muted);font-weight:700}.menu a.active{background:#f3f0e9;color:var(--ink)}
@@ -68,10 +68,10 @@
     .interaction-btn,.actions-line button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:750;padding:6px 8px;border-radius:999px;cursor:pointer}.interaction-btn:hover,.actions-line button:hover{background:#f2efe8;color:var(--ink)}.interaction-btn.active{background:#fff0ed;color:#c83d28}
     .comments-block{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}.comment-row{display:flex;gap:9px;padding:8px 0}.comment-row+.comment-row{border-top:1px solid #f0ede7}.comment-copy{flex:1;min-width:0}.comment-copy strong,.comment-copy .user-link{font-size:12px}.comment-copy p{font-size:13px;margin:3px 0 0;line-height:1.45}.comment-meta{font-size:10px;color:var(--muted)}.comment-actions{display:flex;gap:3px}.comment-actions button{border:0;background:transparent;color:var(--muted);font-size:10px;cursor:pointer;padding:3px 5px}.comment-form{display:flex;gap:8px;margin-top:8px}.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:#fbfaf7}.comment-form button{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:8px 12px;font-weight:800;cursor:pointer}.comments-more{font-size:11px;color:var(--muted);margin:4px 0}
     .invite-row{display:flex;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.invite-row:first-child{border-top:0}.invite-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:850;letter-spacing:.04em;flex:1;word-break:break-all}.invite-meta{font-size:10px;color:var(--muted);margin-top:3px}.invite-copy{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 10px;font-weight:800;cursor:pointer}
-    .poll-composer{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfaf7}.poll-composer>strong{font-size:12px}.poll-option-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.poll-option-grid input,.poll-settings input[type="datetime-local"]{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;min-width:0}.poll-settings{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}.poll-settings label{display:flex;align-items:center;gap:6px}.poll-box{margin:12px 0 4px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfaf7}.poll-question{font-weight:850;margin-bottom:9px}.poll-options{display:grid;gap:7px}.poll-option-btn{width:100%;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;text-align:left;cursor:pointer}.poll-option-btn:hover{border-color:#aaa39a}.poll-option-btn.selected{border-color:var(--ink);background:#f2efe8}.poll-option-label{flex:1}.poll-option-count{font-size:11px;color:var(--muted);font-weight:800}.poll-meta{margin-top:8px;font-size:10px;color:var(--muted)}.request-list{margin:12px 0}.request-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.request-row:first-child{border-top:0}.request-person{flex:1;min-width:0}.request-person strong{display:block}.request-person span{font-size:11px;color:var(--muted)}.request-actions{display:flex;gap:6px}.request-actions button{border:0;border-radius:999px;padding:7px 9px;font-size:10px;font-weight:850}.request-approve{background:var(--ink);color:#fff}.request-reject{background:#f3f0e9;color:var(--ink)}
+    .photo-composer{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfaf7;display:flex;align-items:center;gap:10px;flex-wrap:wrap}.photo-composer strong{font-size:12px}.photo-composer input{max-width:100%}.post-photo{display:block;width:100%;max-height:620px;object-fit:cover;border-radius:14px;margin:12px 0 4px;background:#f1eee7}.avatar img,.profile-avatar-large img,.mini img,.avatar-preview img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}.avatar-upload-row{display:flex;align-items:center;gap:12px}.avatar-preview{width:54px;height:54px;cursor:default;flex:0 0 auto}.notification-button{position:relative;width:38px;height:38px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font-weight:900;font-size:18px;cursor:pointer}.notification-button:hover{background:#f3f0e9}.notification-badge{position:absolute;right:-4px;top:-5px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--accent);color:#fff;font-size:10px;display:grid;place-items:center;border:2px solid #fff}.notification-toolbar{display:flex;justify-content:flex-end;margin:-4px 0 8px}.notification-row{width:100%;display:flex;gap:10px;align-items:flex-start;text-align:left;border:0;border-top:1px solid var(--line);background:transparent;padding:12px 4px;cursor:pointer}.notification-row:first-child{border-top:0}.notification-row:hover{background:#fbfaf7}.notification-row.unread{background:#fff7f3}.notification-copy{flex:1;min-width:0}.notification-copy strong{display:block;font-size:13px}.notification-copy span{display:block;color:var(--muted);font-size:11px;margin-top:3px}.notification-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;flex:0 0 auto}.notification-empty{padding:18px 4px;color:var(--muted);font-size:13px}.poll-composer{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfaf7}.poll-composer>strong{font-size:12px}.poll-option-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.poll-option-grid input,.poll-settings input[type="datetime-local"]{border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff;min-width:0}.poll-settings{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}.poll-settings label{display:flex;align-items:center;gap:6px}.poll-box{margin:12px 0 4px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fbfaf7}.poll-question{font-weight:850;margin-bottom:9px}.poll-options{display:grid;gap:7px}.poll-option-btn{width:100%;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;text-align:left;cursor:pointer}.poll-option-btn:hover{border-color:#aaa39a}.poll-option-btn.selected{border-color:var(--ink);background:#f2efe8}.poll-option-label{flex:1}.poll-option-count{font-size:11px;color:var(--muted);font-weight:800}.poll-meta{margin-top:8px;font-size:10px;color:var(--muted)}.request-list{margin:12px 0}.request-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.request-row:first-child{border-top:0}.request-person{flex:1;min-width:0}.request-person strong{display:block}.request-person span{font-size:11px;color:var(--muted)}.request-actions{display:flex;gap:6px}.request-actions button{border:0;border-radius:999px;padding:7px 9px;font-size:10px;font-weight:850}.request-approve{background:var(--ink);color:#fff}.request-reject{background:#f3f0e9;color:var(--ink)}
     .right-card{padding:18px;margin-bottom:14px}.right-card h3{margin:0 0 14px;font-size:17px}.event{padding:12px 0;border-top:1px solid var(--line)}.event:first-of-type{border-top:0}.event strong{display:block}.event span{font-size:12px;color:var(--muted)}.community-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.community-row:first-child{border-top:0}.community-icon{width:36px;height:36px;border-radius:12px;background:#f0ede5;display:grid;place-items:center;font-weight:900}.community-copy{min-width:0;flex:1}.community-copy strong{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.community-copy span{font-size:11px;color:var(--muted)}.community-open{border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.modal-backdrop{position:fixed;inset:0;background:rgba(20,18,15,.46);display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(520px,100%);background:#fff;border-radius:26px;border:1px solid var(--line);box-shadow:var(--shadow);padding:24px}.modal-head{display:flex;align-items:center;gap:14px}.modal-head h2{margin:0;font-size:27px;letter-spacing:-.035em}.modal-head button{margin-left:auto;border:0;background:#f3f0e9;width:36px;height:36px;border-radius:50%;font-size:19px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;z-index:70;box-shadow:var(--shadow)}.post-destination{color:var(--blue);font-weight:800}.empty{font-size:13px;color:var(--muted);padding:6px 0}
     .community-page{display:flex;flex-direction:column;gap:14px}.community-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.community-cover{height:150px;background:linear-gradient(135deg,#ef4f32 0%,#ef4f32 34%,#2647d7 34%,#2647d7 67%,#2f9b72 67%);opacity:.92}.community-body{padding:22px}.community-topline{display:flex;align-items:flex-start;gap:16px}.community-big-icon{width:72px;height:72px;border-radius:20px;background:#f3f0e9;display:grid;place-items:center;font-size:30px;font-weight:900;margin-top:-56px;border:5px solid #fff}.community-title-wrap{min-width:0;flex:1}.community-title-wrap h2{font-size:32px;letter-spacing:-.04em;margin:0 0 4px}.community-meta{color:var(--muted);font-size:13px}.community-description{color:#4b4740;line-height:1.6;margin:16px 0 0}.community-actions{display:flex;gap:9px;flex-wrap:wrap}.back-link{border:0;background:transparent;color:var(--muted);font-weight:800;padding:0;margin-bottom:2px;text-align:left}.community-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.community-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.community-tab.active{background:#f1eee7;color:var(--ink)}.community-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-panel h3{margin:0 0 12px}.member-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.member{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:11px}.member .mini{flex:0 0 auto}.community-composer{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.community-composer textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:14px;padding:13px 14px;resize:vertical;outline:none}.community-composer textarea:focus{border-color:rgba(239,79,50,.7);box-shadow:0 0 0 3px rgba(239,79,50,.08)}.community-composer-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}.community-post-list .empty-state{background:#fff;border:1px dashed var(--line);border-radius:18px;padding:28px;text-align:center;color:var(--muted)}.small-stat{display:inline-flex;align-items:center;gap:5px;margin-right:12px}.community-row .community-copy{cursor:pointer}.community-row-actions{display:flex;gap:6px}.community-row-actions button{border:0;background:#f3f0e9;border-radius:999px;padding:7px 9px;font-size:11px;font-weight:800}
-    .profile-page{display:flex;flex-direction:column;gap:14px}.profile-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.profile-cover{height:150px;background:linear-gradient(120deg,#2647d7 0%,#2647d7 38%,#ef4f32 38%,#ef4f32 70%,#2f9b72 70%);opacity:.88}.profile-body{padding:22px}.profile-head{display:flex;align-items:flex-start;gap:16px}.profile-avatar-large{width:92px;height:92px;border-radius:50%;background:var(--accent);color:white;border:6px solid #fff;display:grid;place-items:center;font-size:36px;font-weight:900;margin-top:-67px;flex:0 0 auto}.profile-identity{min-width:0;flex:1}.profile-identity h2{font-size:34px;letter-spacing:-.045em;margin:0 0 3px}.profile-handle{color:var(--muted);font-size:14px}.profile-location{color:var(--muted);font-size:13px;margin-top:6px}.profile-actions{display:flex;gap:8px}.profile-stats{display:flex;gap:22px;flex-wrap:wrap;margin:20px 0 12px}.profile-stat strong{display:block;font-size:20px}.profile-stat span{font-size:12px;color:var(--muted)}.profile-dances{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.profile-dances span{padding:7px 10px;border-radius:999px;background:#f2efe8;font-size:12px;font-weight:800}.profile-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.profile-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.profile-tab.active{background:#f1eee7;color:var(--ink)}.profile-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.profile-panel h3{margin:0 0 12px}.profile-community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-community-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.profile-community-card strong{display:block;margin-bottom:4px}.profile-community-card span{font-size:12px;color:var(--muted)}.profile-community-card button{margin-top:10px;border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.profile-about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.about-item{border:1px solid var(--line);border-radius:14px;padding:13px}.about-item span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:4px}.clickable-profile{cursor:pointer}.avatar{cursor:pointer}.user-link{border:0;background:transparent;padding:0;font:inherit;font-weight:800;color:inherit;cursor:pointer;text-align:left}.user-link:hover{text-decoration:underline}.relationship-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:#f1eee7;font-size:11px;font-weight:850;color:var(--muted);margin-top:7px}.relationship-badge.connected{background:#e8f5ef;color:#19704d}.relationship-badge.follows{background:#eef1ff;color:#2647d7}
+    .profile-page{display:flex;flex-direction:column;gap:14px}.profile-hero{background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden}.profile-cover{height:150px;background:linear-gradient(120deg,#2647d7 0%,#2647d7 38%,#ef4f32 38%,#ef4f32 70%,#2f9b72 70%);opacity:.88}.profile-body{padding:22px}.profile-head{display:flex;align-items:flex-start;gap:16px}.profile-avatar-large{width:92px;height:92px;border-radius:50%;background:var(--accent);color:white;border:6px solid #fff;display:grid;place-items:center;font-size:36px;font-weight:900;margin-top:-67px;flex:0 0 auto;overflow:hidden}.profile-identity{min-width:0;flex:1}.profile-identity h2{font-size:34px;letter-spacing:-.045em;margin:0 0 3px}.profile-handle{color:var(--muted);font-size:14px}.profile-location{color:var(--muted);font-size:13px;margin-top:6px}.profile-actions{display:flex;gap:8px}.profile-stats{display:flex;gap:22px;flex-wrap:wrap;margin:20px 0 12px}.profile-stat strong{display:block;font-size:20px}.profile-stat span{font-size:12px;color:var(--muted)}.profile-dances{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}.profile-dances span{padding:7px 10px;border-radius:999px;background:#f2efe8;font-size:12px;font-weight:800}.profile-tabs{display:flex;gap:6px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:6px;overflow:auto}.profile-tab{border:0;background:transparent;padding:10px 14px;border-radius:11px;font-weight:800;color:var(--muted);white-space:nowrap}.profile-tab.active{background:#f1eee7;color:var(--ink)}.profile-panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px}.profile-panel h3{margin:0 0 12px}.profile-community-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-community-card{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}.profile-community-card strong{display:block;margin-bottom:4px}.profile-community-card span{font-size:12px;color:var(--muted)}.profile-community-card button{margin-top:10px;border:0;background:#f3f0e9;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800}.profile-about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.about-item{border:1px solid var(--line);border-radius:14px;padding:13px}.about-item span{display:block;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:4px}.clickable-profile{cursor:pointer}.avatar{cursor:pointer}.user-link{border:0;background:transparent;padding:0;font:inherit;font-weight:800;color:inherit;cursor:pointer;text-align:left}.user-link:hover{text-decoration:underline}.relationship-badge{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;background:#f1eee7;font-size:11px;font-weight:850;color:var(--muted);margin-top:7px}.relationship-badge.connected{background:#e8f5ef;color:#19704d}.relationship-badge.follows{background:#eef1ff;color:#2647d7}
     .privacy-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;background:#f1eee7;color:var(--muted);font-size:11px;font-weight:850}.privacy-badge.private{background:#fff0ed;color:#a92d1a}.event-card{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:10px}.event-card-head{display:flex;align-items:flex-start;gap:10px}.event-card-head>div:first-child{flex:1}.event-card h4{margin:0 0 4px;font-size:16px}.event-card p{margin:7px 0 0;color:var(--muted);font-size:13px;line-height:1.5}.event-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px}.event-actions button{border:0;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:800;background:#f3f0e9}.event-actions button.active{background:var(--ink);color:#fff}.event-invite-state{margin-top:10px;padding:10px 12px;border-radius:12px;background:#fff7e8;font-size:12px;color:#6c4d13}.event-invite-state.accepted{background:#eaf7f0;color:#176341}.event-invite-list{margin-top:14px}.event-invite-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}.event-invite-row:first-child{border-top:0}.event-invite-person{flex:1;min-width:0}.event-invite-person strong{display:block}.event-invite-person span{font-size:11px;color:var(--muted)}
     .site-footer{border-top:1px solid var(--line);background:#111;color:#f7f3eb;padding:30px 28px}.site-footer-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:22px;flex-wrap:wrap}.site-footer-copy{margin-right:auto}.site-footer-copy strong{display:block;font-size:15px;letter-spacing:-.02em}.site-footer-copy span{display:block;margin-top:5px;color:#aaa49b;font-size:12px}.site-footer-links{display:flex;gap:10px;flex-wrap:wrap}.site-footer a{color:#f7f3eb;text-decoration:none;border:1px solid rgba(255,255,255,.16);padding:9px 12px;border-radius:999px;font-size:12px;font-weight:800}.site-footer a:hover{background:#f7f3eb;color:#111}.site-footer .support-link{background:#f7f3eb;color:#111;border-color:#f7f3eb}
 
@@ -259,6 +259,7 @@
         <a id="topProfileLink" class="top-nav-link" data-nav="profile" href="#profileView" data-action="open-profile">Profile</a>
       </nav>
       <div class="top-actions">
+        <button id="notificationsBtn" class="notification-button" type="button" aria-label="Notifications" title="Notifications">♢<span id="notificationBadge" class="notification-badge hidden">0</span></button>
         <button id="topCreatePostBtn" class="top-create" type="button">+ Post</button>
         <button id="logoutBtn" class="top-logout" type="button" title="Log out">Log out</button>
         <button id="avatar" class="avatar" type="button" data-action="open-profile" aria-label="Open your profile" title="Open profile">T</button>
@@ -293,6 +294,11 @@
             <label><input id="pollAllowMultiple" type="checkbox"> Allow multiple choices</label>
             <label>Closes <input id="pollClosesAt" type="datetime-local"></label>
           </div>
+        </div>
+        <div id="photoComposerFields" class="photo-composer hidden">
+          <strong>Photo</strong>
+          <input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif">
+          <span id="photoFileName" class="hint">Choose an image up to 10 MB.</span>
         </div>
         <div class="composer-actions">
           <button class="post-type selected-type" data-type="Post">Post</button>
@@ -464,6 +470,7 @@
       <div class="field"><label>City</label><input id="editCity"></div>
       <div class="field"><label>Role</label><select id="editRole"><option value="dancer">Dancer</option><option value="beginner">Beginner</option><option value="instructor">Instructor</option><option value="dj">DJ</option><option value="organizer">Organizer</option><option value="school">School</option><option value="venue">Venue</option></select></div>
     </div>
+    <div class="field"><label>Profile photo</label><div class="avatar-upload-row"><div id="editAvatarPreview" class="avatar avatar-preview">D</div><input id="editAvatarFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div><div class="hint">JPEG, PNG, WebP or GIF · max 5 MB</div></div>
     <div class="field"><label>Bio</label><textarea id="editBio" placeholder="A little about your dance life…"></textarea></div>
     <div class="field"><label>Dance styles</label><input id="editDances" placeholder="Lindy Hop, Salsa, Tango"></div><div class="field"><label>Profile privacy</label><select id="editProfilePrivacy"><option value="public">Public — visible to all members</option><option value="private">Private — only followers can see full profile</option></select></div>
     <div class="modal-actions"><button id="cancelEditProfile" class="secondary">Cancel</button><button id="saveProfileBtn" class="primary">Save profile</button></div>
@@ -485,6 +492,16 @@
     <div class="field"><label>Privacy</label><select id="eventPrivacy"><option value="public">Public — visible to all members</option><option value="community">Community only — active community members</option><option value="private">Private — invited users only</option></select></div>
     <div class="field"><label>Description</label><textarea id="eventDescription" placeholder="What should dancers know?"></textarea></div>
     <div class="modal-actions"><button id="cancelEvent" class="secondary">Cancel</button><button id="saveEvent" class="primary">Create event</button></div>
+  </div>
+</div>
+<div id="notificationsModal" class="modal-backdrop hidden">
+  <div class="modal notification-modal" role="dialog" aria-modal="true" aria-labelledby="notificationsTitle">
+    <div class="modal-head">
+      <div><span class="eyebrow">Activity</span><h2 id="notificationsTitle">Notifications</h2></div>
+      <button id="closeNotificationsModal" aria-label="Close">×</button>
+    </div>
+    <div class="notification-toolbar"><button id="markAllNotificationsRead" class="secondary" type="button">Mark all read</button></div>
+    <div id="notificationList"><p class="hint">Loading notifications…</p></div>
   </div>
 </div>
 <div id="eventInviteModal" class="modal-backdrop hidden">
@@ -528,6 +545,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   let activeCommunityId = null;
   let viewedProfile = null;
   let loadedPosts = [];
+  let loadedNotifications = [];
+  let notificationChannel = null;
   let commentsByPost = new Map();
   let reactionsByPost = new Map();
   let loadedEvents = [];
@@ -807,6 +826,73 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
     return profile.communities || [];
   }
+  function avatarInner(profile){
+    if(profile?.avatarUrl){
+      return '<img src="' + escapeHtml(profile.avatarUrl) + '" alt="">';
+    }
+    return escapeHtml((profile?.name || 'D').charAt(0).toUpperCase());
+  }
+
+  function renderAvatarElement(element,profile){
+    if(!element) return;
+    element.innerHTML = avatarInner(profile);
+  }
+
+  function safeFileExtension(file){
+    const byType = {
+      'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif',
+      'image/heic':'heic','image/heif':'heif'
+    };
+    if(byType[file?.type]) return byType[file.type];
+    const raw = String(file?.name || '').split('.').pop().toLowerCase().replace(/[^a-z0-9]/g,'');
+    return raw || 'img';
+  }
+
+  function avatarPathFromPublicUrl(url){
+    const marker = '/storage/v1/object/public/avatars/';
+    const index = String(url || '').indexOf(marker);
+    return index >= 0 ? decodeURIComponent(String(url).slice(index + marker.length)) : null;
+  }
+
+  async function uploadAvatarFile(file){
+    if(!file) return null;
+    const allowed = new Set(['image/jpeg','image/png','image/webp','image/gif']);
+    if(!allowed.has(file.type)) throw new Error('Avatar must be JPEG, PNG, WebP or GIF.');
+    if(file.size > 5 * 1024 * 1024) throw new Error('Avatar must be 5 MB or smaller.');
+
+    const path = currentProfile.id + '/avatar-' + Date.now() + '-' + crypto.randomUUID() + '.' + safeFileExtension(file);
+    const {error} = await supabaseClient.storage.from('avatars').upload(path,file,{
+      cacheControl:'3600',
+      contentType:file.type,
+      upsert:false
+    });
+    if(error) throw error;
+    const {data} = supabaseClient.storage.from('avatars').getPublicUrl(path);
+    return {path,url:data.publicUrl};
+  }
+
+  async function hydratePostMedia(posts){
+    await Promise.all((posts || []).map(async post => {
+      post.mediaUrl = '';
+      if(!post.mediaPath) return;
+      if(/^https?:\/\//i.test(post.mediaPath)){
+        post.mediaUrl = post.mediaPath;
+        return;
+      }
+      const {data,error} = await supabaseClient.storage.from('post-media').createSignedUrl(post.mediaPath,3600);
+      if(!error && data?.signedUrl) post.mediaUrl = data.signedUrl;
+      else if(error) console.error('Could not sign post media',error);
+    }));
+  }
+
+  function postContentHtml(post){
+    if(post.poll) return pollHtml(post);
+    let html = '';
+    if(post.text) html += postContentHtml(post);
+    if(post.mediaUrl) html += '<img class="post-photo" src="' + escapeHtml(post.mediaUrl) + '" alt="Photo shared by ' + escapeHtml(post.profile?.name || 'a dancer') + '">';
+    return html;
+  }
+
   function showAuthError(message){
     const el = $('loginError');
     el.textContent = message || 'Something went wrong.';
@@ -858,6 +944,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   }
 
   function showAuthGate(){
+    stopNotificationRealtime();
     currentSession = null;
     currentProfile = null;
     viewedProfile = null;
@@ -912,7 +999,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     $('gate').classList.add('hidden');
     $('app').classList.remove('hidden');
     const name = profile.name || 'Dancer';
-    $('avatar').textContent = name.trim().charAt(0).toUpperCase() || 'D';
+    renderAvatarElement($('avatar'),profile);
     $('profileSummary').innerHTML =
       '<strong style="color:var(--ink)">' + escapeHtml(name) + '</strong><br>' +
       escapeHtml(profile.city || 'Istanbul') + '<br>' +
@@ -925,6 +1012,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     refreshCommunities();
     refreshFollows();
     refreshEvents();
+    refreshNotifications();
+    startNotificationRealtime();
     renderHomeEvents();
     setTopNavActive('home');
   }
@@ -1047,7 +1136,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   function postCardHtml(post){
     const profile = post.profile || {};
-    const initial = escapeHtml((profile.name || 'D').charAt(0).toUpperCase());
+    const initial = avatarInner(profile);
     const author = profile.username
       ? '<button class="user-link" data-user-username="' + escapeHtml(profile.username) + '">' + escapeHtml(profile.name || 'Dancer') + '</button>'
       : '<strong>' + escapeHtml(profile.name || 'Dancer') + '</strong>';
@@ -1059,7 +1148,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' +
       escapeHtml(post.communityName || 'Community') + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
-      (post.poll ? pollHtml(post) : '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>') +
+      postContentHtml(post) +
       postInteractionsHtml(post, ownerActions) + '</article>';
   }
 
@@ -1087,6 +1176,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     const posts = (data || []).map(normalizeDbPost);
+    await hydratePostMedia(posts);
     await refreshPostInteractions([...new Set([...loadedPosts.map(p => p.id), ...posts.map(p => p.id)])]);
     posts.forEach(post => {
       const existing = loadedPosts.findIndex(x => x.id === post.id);
@@ -1480,9 +1570,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       ? '<button type="button" data-edit-post="' + post.id + '">Edit</button><button type="button" data-delete-post="' + post.id + '">Delete</button>'
       : '';
     return '<article class="feed-card">' +
-      '<div class="meta"><div class="mini">' + escapeHtml((target.name || 'D').charAt(0).toUpperCase()) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(target.username || currentUsername()) + '">' + escapeHtml(target.name || 'Dancer') + '</button><br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
+      '<div class="meta"><div class="mini">' + avatarInner(target) + '</div><div><button class="user-link" data-user-username="' + escapeHtml(target.username || currentUsername()) + '">' + escapeHtml(target.name || 'Dancer') + '</button><br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
       '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
-      (post.poll ? pollHtml(post) : '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>') +
+      postContentHtml(post) +
       postInteractionsHtml(post, ownerActions) + '</article>';
   }
 
@@ -1505,7 +1595,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const followingCount = own ? [...outgoingFollows.values()].filter(x => x.status === 'accepted').length : '—';
     const fullAccess = canViewProfile(p);
 
-    $('profileAvatarLarge').textContent = (p.name || 'D').charAt(0).toUpperCase();
+    renderAvatarElement($('profileAvatarLarge'),p);
     $('profilePageName').textContent = p.name || 'Dancer';
     $('profilePageHandle').textContent = '@' + (p.username || 'dancer');
     $('profilePageLocation').textContent = (p.city || 'Istanbul') + ' · ' + (p.role || 'dancer');
@@ -1592,6 +1682,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     $('editBio').value = currentProfile.bio || '';
     $('editDances').value = (currentProfile.dances || []).join(', ');
     $('editProfilePrivacy').value = currentProfile.privacy || 'public';
+    $('editAvatarFile').value = '';
+    renderAvatarElement($('editAvatarPreview'),currentProfile);
     $('editProfileModal').classList.remove('hidden');
     $('editName').focus();
   }
@@ -1620,6 +1712,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       role: p.role || 'dancer',
       privacy: p.privacy || 'public',
       bio: p.bio || '',
+      avatarUrl: p.avatar_url || '',
       dances: []
     };
     if(profile.username) realProfilesByUsername[profile.username] = profile;
@@ -1653,6 +1746,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       communityName: c.name || '',
       createdAt: row.created_at,
       updatedAt: row.updated_at,
+      mediaPath: row.media_url || '',
+      mediaUrl: '',
       profile,
       poll
     };
@@ -1703,8 +1798,14 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   async function deletePost(postId){
     const post = loadedPosts.find(x => x.id === postId);
-    if(!post || post.authorId !== (currentProfile && currentProfile.id)) return;
+    if(!post || post.authorId !== currentProfile?.id) return;
     if(!window.confirm('Delete this post?')) return;
+
+    if(post.mediaPath && !/^https?:\/\//i.test(post.mediaPath)){
+      const {error:storageError} = await supabaseClient.storage.from('post-media').remove([post.mediaPath]);
+      if(storageError){ toast(storageError.message); return; }
+    }
+
     const { error } = await supabaseClient.from('posts').delete().eq('id', postId);
     if(error){ toast(error.message); return; }
     toast('Post deleted');
@@ -1737,7 +1838,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       return '<article class="feed-card">' +
         '<div class="meta"><div class="mini">' + initial + '</div><div>' + author + '<br><span>' + destination + ' · ' + escapeHtml(postTimeLabel(post.createdAt)) + '</span></div></div>' +
         '<span class="badge">' + escapeHtml(post.type || 'Post') + '</span>' +
-        '<p style="font-size:16px;color:var(--ink);white-space:pre-wrap">' + escapeHtml(post.text) + '</p>' +
+        postContentHtml(post) +
         postInteractionsHtml(post, ownerActions) + '</article>';
     }).join('');
 
@@ -1767,6 +1868,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     loadedPosts = (data || []).map(normalizeDbPost);
+    await hydratePostMedia(loadedPosts);
     await refreshPostInteractions(loadedPosts.map(post => post.id));
     renderPostsFromState();
   }
@@ -2132,6 +2234,150 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     bindEventActions(host);
   }
 
+  function notificationLabel(notification){
+    const actor = notification.actor?.name || 'Someone';
+    const message = notification.payload?.message || notification.notification_type.replace(/_/g,' ');
+    const detail = notification.payload?.event_title || notification.payload?.community_name || '';
+    return {
+      title: actor + ' ' + message,
+      detail
+    };
+  }
+
+  async function refreshNotifications(){
+    if(!currentProfile) return;
+    const {data,error} = await supabaseClient
+      .from('notifications')
+      .select('id,recipient_id,actor_id,notification_type,entity_type,entity_id,payload,read_at,created_at,profiles!notifications_actor_id_fkey(id,username,display_name,avatar_url)')
+      .eq('recipient_id',currentProfile.id)
+      .order('created_at',{ascending:false})
+      .limit(50);
+
+    if(error){ console.error(error); return; }
+    loadedNotifications = (data || []).map(row => {
+      const actorRow = row.profiles || null;
+      const actor = actorRow ? {
+        id:actorRow.id,
+        username:actorRow.username || '',
+        name:actorRow.display_name || 'Dancer',
+        avatarUrl:actorRow.avatar_url || ''
+      } : null;
+      if(actor?.username && !realProfilesByUsername[actor.username]){
+        realProfilesByUsername[actor.username] = {...actor,city:'',role:'dancer',privacy:'public',bio:'',dances:[]};
+      }
+      return {...row,actor};
+    });
+    renderNotifications();
+  }
+
+  function renderNotifications(){
+    const badge = $('notificationBadge');
+    const unread = loadedNotifications.filter(n => !n.read_at).length;
+    if(badge){
+      badge.textContent = unread > 99 ? '99+' : String(unread);
+      badge.classList.toggle('hidden',unread === 0);
+    }
+
+    const host = $('notificationList');
+    if(!host) return;
+    host.innerHTML = loadedNotifications.length ? loadedNotifications.map(notification => {
+      const label = notificationLabel(notification);
+      const actorAvatar = notification.actor ? avatarInner(notification.actor) : '•';
+      return '<button type="button" class="notification-row ' + (!notification.read_at ? 'unread' : '') + '" data-notification-id="' + notification.id + '">' +
+        '<div class="mini">' + actorAvatar + '</div><div class="notification-copy"><strong>' + escapeHtml(label.title) + '</strong>' +
+        (label.detail ? '<span>' + escapeHtml(label.detail) + '</span>' : '') +
+        '<span>' + escapeHtml(postTimeLabel(notification.created_at)) + '</span></div>' +
+        (!notification.read_at ? '<span class="notification-dot"></span>' : '') + '</button>';
+    }).join('') : '<div class="notification-empty">Nothing new yet.</div>';
+
+    host.querySelectorAll('[data-notification-id]').forEach(btn => btn.addEventListener('click', () => openNotificationTarget(btn.dataset.notificationId)));
+  }
+
+  function openNotificationsModal(){
+    $('notificationsModal').classList.remove('hidden');
+    refreshNotifications();
+  }
+
+  function closeNotificationsModal(){ $('notificationsModal').classList.add('hidden'); }
+
+  async function markNotificationRead(notification){
+    if(!notification || notification.read_at) return;
+    const readAt = new Date().toISOString();
+    const {error} = await supabaseClient
+      .from('notifications')
+      .update({read_at:readAt})
+      .eq('id',notification.id)
+      .eq('recipient_id',currentProfile.id);
+    if(error){ console.error(error); return; }
+    notification.read_at = readAt;
+    renderNotifications();
+  }
+
+  async function markAllNotificationsRead(){
+    if(!currentProfile) return;
+    const readAt = new Date().toISOString();
+    const {error} = await supabaseClient
+      .from('notifications')
+      .update({read_at:readAt})
+      .eq('recipient_id',currentProfile.id)
+      .is('read_at',null);
+    if(error){ toast(error.message); return; }
+    loadedNotifications.forEach(n => { if(!n.read_at) n.read_at = readAt; });
+    renderNotifications();
+  }
+
+  async function openNotificationTarget(id){
+    const notification = loadedNotifications.find(n => n.id === id);
+    if(!notification) return;
+    await markNotificationRead(notification);
+    closeNotificationsModal();
+
+    if(notification.entity_type === 'profile' && notification.actor?.username){
+      await openUserProfile(notification.actor.username);
+      return;
+    }
+    if(notification.entity_type === 'community' && notification.entity_id){
+      if(!allCommunities().some(c => c.id === notification.entity_id)) await refreshCommunities();
+      if(allCommunities().some(c => c.id === notification.entity_id)) await openCommunity(notification.entity_id);
+      return;
+    }
+    if(notification.entity_type === 'event'){
+      viewedProfile = currentProfile;
+      activeCommunityId = null;
+      $('profileView').classList.add('hidden');
+      $('communityView').classList.add('hidden');
+      $('homeView').classList.remove('hidden');
+      setTopNavActive('events');
+      setTimeout(() => $('eventsPanel')?.scrollIntoView({behavior:'smooth',block:'center'}),50);
+      return;
+    }
+    if(notification.entity_type === 'post'){
+      closeProfileView();
+      setTimeout(() => $('userPosts')?.scrollIntoView({behavior:'smooth',block:'start'}),50);
+    }
+  }
+
+  function stopNotificationRealtime(){
+    if(notificationChannel){
+      supabaseClient.removeChannel(notificationChannel);
+      notificationChannel = null;
+    }
+  }
+
+  function startNotificationRealtime(){
+    stopNotificationRealtime();
+    if(!currentProfile) return;
+    notificationChannel = supabaseClient
+      .channel('notifications-' + currentProfile.id)
+      .on('postgres_changes',{
+        event:'*',
+        schema:'public',
+        table:'notifications',
+        filter:'recipient_id=eq.' + currentProfile.id
+      },() => refreshNotifications())
+      .subscribe();
+  }
+
   function openInviteModal(){
     if(!currentProfile) return;
     $('inviteModal').classList.remove('hidden');
@@ -2266,13 +2512,24 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     btn.style.background = '#ded9cf';
     currentPostType = btn.dataset.type;
     const isPoll = currentPostType === 'Poll';
+    const isPhoto = currentPostType === 'Photo';
     $('pollComposerFields').classList.toggle('hidden',!isPoll);
-    $('composerInput').placeholder = isPoll ? 'Ask your poll question…' : 'Share something with dancers…';
+    $('photoComposerFields').classList.toggle('hidden',!isPhoto);
+    $('composerInput').placeholder = isPoll ? 'Ask your poll question…' : (isPhoto ? 'Add an optional caption…' : 'Share something with dancers…');
   }));
 
   $('publishPostBtn').addEventListener('click', async () => {
     const text = $('composerInput').value.trim();
-    if(!text){ toast(currentPostType === 'Poll' ? 'Write a poll question first.' : 'Write something first.'); return; }
+    const photoFile = $('photoFile').files?.[0] || null;
+    if(currentPostType === 'Photo'){
+      if(!photoFile){ toast('Choose a photo first.'); return; }
+      const allowed = new Set(['image/jpeg','image/png','image/webp','image/gif','image/heic','image/heif']);
+      if(!allowed.has(photoFile.type)){ toast('Choose a supported image file.'); return; }
+      if(photoFile.size > 10 * 1024 * 1024){ toast('Photo must be 10 MB or smaller.'); return; }
+    }else if(!text){
+      toast(currentPostType === 'Poll' ? 'Write a poll question first.' : 'Write something first.');
+      return;
+    }
     if(!currentSession || !currentProfile){ toast('Sign in first.'); return; }
 
     const destination = $('postDestination').value;
@@ -2308,8 +2565,32 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
         p_allow_multiple:$('pollAllowMultiple').checked,
         p_closes_at:closesAt
       }));
+    }else if(currentPostType === 'Photo'){
+      const postId = crypto.randomUUID();
+      const mediaPath = postId + '/' + crypto.randomUUID() + '.' + safeFileExtension(photoFile);
+      const insertResult = await supabaseClient.from('posts').insert({
+        id:postId,
+        author_id:currentProfile.id,
+        community_id:communityId,
+        post_type:'photo',
+        body:text || null,
+        media_url:mediaPath,
+        visibility:communityId ? 'community' : 'public'
+      });
+      error = insertResult.error;
+      if(!error){
+        const uploadResult = await supabaseClient.storage.from('post-media').upload(mediaPath,photoFile,{
+          cacheControl:'3600',
+          contentType:photoFile.type,
+          upsert:false
+        });
+        if(uploadResult.error){
+          error = uploadResult.error;
+          await supabaseClient.from('posts').delete().eq('id',postId);
+        }
+      }
     }else{
-      const typeMap = {Post:'post',Question:'question',Photo:'photo',Link:'link',Event:'event'};
+      const typeMap = {Post:'post',Question:'question',Link:'link',Event:'event'};
       const postType = typeMap[currentPostType] || 'post';
       ({error} = await supabaseClient.from('posts').insert({
         author_id: currentProfile.id,
@@ -2328,7 +2609,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     document.querySelectorAll('.poll-option-input').forEach(input => input.value = '');
     $('pollAllowMultiple').checked = false;
     $('pollClosesAt').value = '';
+    $('photoFile').value = '';
+    $('photoFileName').textContent = 'Choose an image up to 10 MB.';
     $('pollComposerFields').classList.add('hidden');
+    $('photoComposerFields').classList.add('hidden');
     $('composerInput').placeholder = 'Share something with dancers…';
     currentPostType = 'Post';
     document.querySelectorAll('.post-type').forEach(x => x.style.background = '#f3f0e9');
@@ -2340,6 +2624,23 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   });
 
 
+
+  $('photoFile').addEventListener('change', () => {
+    const file = $('photoFile').files?.[0];
+    $('photoFileName').textContent = file ? file.name + ' · ' + Math.ceil(file.size / 1024) + ' KB' : 'Choose an image up to 10 MB.';
+  });
+
+  $('editAvatarFile').addEventListener('change', () => {
+    const file = $('editAvatarFile').files?.[0];
+    if(!file){ renderAvatarElement($('editAvatarPreview'),currentProfile); return; }
+    const url = URL.createObjectURL(file);
+    $('editAvatarPreview').innerHTML = '<img src="' + escapeHtml(url) + '" alt="Avatar preview">';
+  });
+
+  $('notificationsBtn').addEventListener('click', openNotificationsModal);
+  $('closeNotificationsModal').addEventListener('click', closeNotificationsModal);
+  $('notificationsModal').addEventListener('click', e => { if(e.target === $('notificationsModal')) closeNotificationsModal(); });
+  $('markAllNotificationsRead').addEventListener('click', markAllNotificationsRead);
 
   document.addEventListener('click', e => {
     const trigger = e.target.closest('[data-action="open-profile"]');
@@ -2431,29 +2732,47 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const bio = $('editBio').value.trim();
     const dances = $('editDances').value.split(',').map(x => x.trim()).filter(Boolean);
     const privacy = $('editProfilePrivacy').value;
+    const avatarFile = $('editAvatarFile').files?.[0] || null;
     if(!name || !username || !city){ toast('Name, username and city are required.'); return; }
-    if(!currentProfile || !currentProfile.id){ toast('Profile is not connected.'); return; }
+    if(!currentProfile?.id){ toast('Profile is not connected.'); return; }
 
     $('saveProfileBtn').disabled = true;
     let persistedDances;
+    let uploadedAvatar = null;
     try{
       persistedDances = await syncOwnDanceStyles(dances);
+      if(avatarFile) uploadedAvatar = await uploadAvatarFile(avatarFile);
     }catch(error){
       $('saveProfileBtn').disabled = false;
-      toast(error.message || 'Could not save dance styles.');
+      toast(error.message || 'Could not save profile.');
       return;
     }
 
+    const oldAvatarUrl = currentProfile.avatarUrl || '';
+    const avatarUrl = uploadedAvatar?.url || oldAvatarUrl;
     const { data, error } = await supabaseClient
       .from('profiles')
-      .update({ display_name:name, username, city, role, bio, privacy })
+      .update({ display_name:name, username, city, role, bio, privacy, avatar_url:avatarUrl || null })
       .eq('id', currentProfile.id)
       .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
       .single();
+
+    if(error){
+      if(uploadedAvatar) await supabaseClient.storage.from('avatars').remove([uploadedAvatar.path]);
+      $('saveProfileBtn').disabled = false;
+      toast(error.code === '23505' ? 'That username is already taken.' : error.message);
+      return;
+    }
+
+    if(uploadedAvatar && oldAvatarUrl){
+      const oldPath = avatarPathFromPublicUrl(oldAvatarUrl);
+      if(oldPath && oldPath !== uploadedAvatar.path){
+        const cleanup = await supabaseClient.storage.from('avatars').remove([oldPath]);
+        if(cleanup.error) console.error('Could not remove old avatar',cleanup.error);
+      }
+    }
+
     $('saveProfileBtn').disabled = false;
-
-    if(error){ toast(error.code === '23505' ? 'That username is already taken.' : error.message); return; }
-
     const persisted = profileToUi(data);
     persisted.dances = persistedDances;
     persisted.danceStyleIds = loadedDanceStyles.filter(style => persistedDances.includes(style.name)).map(style => style.id);
@@ -2461,11 +2780,11 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     currentProfile = persisted;
     viewedProfile = persisted;
     realProfilesByUsername[persisted.username] = persisted;
-    $('avatar').textContent = name.charAt(0).toUpperCase();
+    renderAvatarElement($('avatar'),persisted);
     $('profileSummary').innerHTML =
       '<strong style="color:var(--ink)">' + escapeHtml(name) + '</strong><br>' +
       escapeHtml(city) + '<br>' +
-      escapeHtml(dances.join(' · ')) + '<br>' +
+      escapeHtml(persistedDances.join(' · ') || 'No dance styles yet') + '<br>' +
       '<span style="font-size:12px">' + escapeHtml(role) + '</span>';
     closeEditProfile();
     renderProfilePage();
