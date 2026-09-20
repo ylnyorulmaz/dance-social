@@ -532,6 +532,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function allEvents(){ return loadedEvents; }
   function privacyLabel(value){
     if(value === 'private') return '🔒 Private';
+    if(value === 'community') return '👥 Community';
     if(value === 'hidden') return '◌ Hidden';
     return '🌐 Public';
   }
