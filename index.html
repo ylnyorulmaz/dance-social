@@ -290,22 +290,6 @@
         </div>
       </div>
       <div id="userPosts"></div>
-
-      <article class="feed-card">
-        <div class="meta"><div class="mini">ER</div><div><strong>EventRadar</strong> · BOT<br><span>Istanbul · 12 min</span></div></div>
-        <span class="badge">Tonight</span>
-        <h3>3 dance events found in Kadıköy tonight</h3>
-        <p>20:00 Lindy Social · 21:00 Salsa Practica · 21:30 Tango Milonga. Event links and source pages will live here.</p>
-        <div class="actions-line"><span>♡ 18</span><span>💬 6</span><span>↗ Share</span></div>
-      </article>
-
-      <article class="feed-card">
-        <div class="meta"><div class="mini">AY</div><div><button class="user-link" data-user-username="ayse">Ayşe Y.</button><br><span>Lindy Hop Istanbul · 34 min</span></div></div>
-        <span class="badge">Question</span>
-        <h3>Where are you dancing this Friday?</h3>
-        <p>I am deciding between the Kadıköy social and the Balboa night. Who is going where?</p>
-        <div class="actions-line"><span>♡ 12</span><span>💬 14</span><span>↗ Share</span></div>
-      </article>
       </section>
 
       <section id="communityView" class="community-page hidden">
@@ -393,11 +377,9 @@
     </main>
 
     <aside class="side-right">
-      <div class="right-card">
-        <h3>Tonight near you</h3>
-        <div class="event"><strong>Lindy Social</strong><span>20:00 · Kadıköy · 27 going</span></div>
-        <div class="event"><strong>Salsa Practica</strong><span>21:00 · Moda · 43 going</span></div>
-        <div class="event"><strong>Milonga</strong><span>21:30 · Beyoğlu · 31 going</span></div>
+      <div class="right-card" id="eventsPanel">
+        <h3>Upcoming events</h3>
+        <div id="eventsPanelList"><div class="hint">Loading events…</div></div>
       </div>
       <div class="right-card" id="communitiesPanel">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
@@ -531,18 +513,6 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   let communityMemberships = new Map();
   let communityMembersCache = new Map();
   const realProfilesByUsername = {};
-  const demoUsers = {
-    ayse: {privacy:'public',name:'Ayşe Y.',username:'ayse',city:'Istanbul',role:'dancer',dances:['Lindy Hop','Balboa','Solo Jazz'],bio:'Lindy hopper, social dancer and weekend workshop collector.',followers:84,following:61,communities:['lindy-istanbul'],followsCurrent:true},
-    mert: {privacy:'private',name:'Mert K.',username:'mert',city:'Istanbul',role:'dancer',dances:['Salsa','Bachata'],bio:'Salsa social regular. Usually looking for the next good social.',followers:47,following:72,communities:['salsa-istanbul'],followsCurrent:false},
-    deniz: {privacy:'public',name:'Deniz A.',username:'deniz',city:'Istanbul',role:'teacher',dances:['Tango','Contemporary'],bio:'Teacher, organizer and milonga person.',followers:132,following:44,communities:['tango-istanbul'],followsCurrent:true},
-    trainerbot: {privacy:'public',name:'DanceTrainer',username:'trainerbot',city:'Global',role:'BOT',dances:['Lindy Hop','Solo Jazz','Balboa'],bio:'Clearly labeled training bot sharing practice prompts and dance videos.',followers:206,following:0,communities:['lindy-istanbul'],followsCurrent:false,isBot:true}
-  };
-
-
-  function loadJSON(key, fallback){
-    try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch(e){ return fallback; }
-  }
-  function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
   function allCommunities(){ return loadedCommunities; }
   function allEvents(){ return loadedEvents; }
   function privacyLabel(value){
@@ -637,6 +607,67 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     );
     return match ? match.id : null;
   }
+  async function ensureDanceStylesLoaded(){
+    if(loadedDanceStyles.length) return loadedDanceStyles;
+    const { data, error } = await supabaseClient
+      .from('dance_styles')
+      .select('id,slug,name')
+      .order('name');
+    if(error) throw error;
+    loadedDanceStyles = data || [];
+    return loadedDanceStyles;
+  }
+
+  async function syncOwnDanceStyles(rawNames){
+    if(!currentProfile?.id) throw new Error('Profile is not connected.');
+    const styles = await ensureDanceStylesLoaded();
+    const requested = [...new Set((rawNames || []).map(name => String(name).trim()).filter(Boolean))];
+    const matches = [];
+    const unknown = [];
+
+    for(const raw of requested){
+      const normalized = raw.toLowerCase();
+      const slugged = normalized.replace(/\s+/g,'-');
+      const style = styles.find(item =>
+        String(item.name || '').toLowerCase() === normalized ||
+        String(item.slug || '').toLowerCase() === slugged
+      );
+      if(style) matches.push(style);
+      else unknown.push(raw);
+    }
+
+    if(unknown.length){
+      throw new Error('Unknown dance style' + (unknown.length > 1 ? 's' : '') + ': ' + unknown.join(', ') + '. Use one of: ' + styles.map(x => x.name).join(', '));
+    }
+
+    const unique = [...new Map(matches.map(style => [style.id, style])).values()];
+    if(unique.length){
+      const { error: upsertError } = await supabaseClient
+        .from('profile_dance_styles')
+        .upsert(
+          unique.map(style => ({profile_id:currentProfile.id,dance_style_id:style.id})),
+          {onConflict:'profile_id,dance_style_id'}
+        );
+      if(upsertError) throw upsertError;
+
+      const ids = unique.map(style => style.id);
+      const { error: deleteError } = await supabaseClient
+        .from('profile_dance_styles')
+        .delete()
+        .eq('profile_id', currentProfile.id)
+        .not('dance_style_id','in','(' + ids.join(',') + ')');
+      if(deleteError) throw deleteError;
+    }else{
+      const { error: deleteError } = await supabaseClient
+        .from('profile_dance_styles')
+        .delete()
+        .eq('profile_id', currentProfile.id);
+      if(deleteError) throw deleteError;
+    }
+
+    return unique.map(style => style.name);
+  }
+
   function toast(message){
     $('toast').textContent = message; $('toast').classList.remove('hidden');
     clearTimeout(window.__danceToast); window.__danceToast = setTimeout(() => $('toast').classList.add('hidden'), 1800);
@@ -685,7 +716,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function profileByUsername(username){
     if(!username) return null;
     if(currentProfile && username === currentUsername()) return currentProfile;
-    return realProfilesByUsername[username] || demoUsers[username] || null;
+    return realProfilesByUsername[username] || null;
   }
   async function refreshFollows(){
     if(!currentProfile) return;
@@ -717,7 +748,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(relatedIds.size){
       const { data: profiles, error: profileError } = await supabaseClient
         .from('profiles')
-        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot')
+        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot,profile_dance_styles(dance_style_id,level,dance_role,dance_styles(id,slug,name))')
         .in('id', [...relatedIds]);
       if(profileError) console.error(profileError);
       (profiles || []).forEach(row => {
@@ -737,25 +768,6 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
     return profile.communities || [];
   }
-  function seededPostsFor(username){
-    const map = {
-      ayse:[
-        {id:'seed-ayse-1',type:'Question',text:'Where are you dancing this Friday? I am deciding between Kadıköy social and Balboa night.',communityId:'lindy-istanbul',communityName:'Lindy Hop Istanbul'},
-        {id:'seed-ayse-2',type:'Post',text:'That last social reminded me how much I missed fast Lindy.',communityId:'',communityName:''}
-      ],
-      mert:[
-        {id:'seed-mert-1',type:'Post',text:'Anyone going to the salsa practica tonight?',communityId:'salsa-istanbul',communityName:'Salsa Istanbul'}
-      ],
-      deniz:[
-        {id:'seed-deniz-1',type:'Post',text:'Sunday practica is open to beginners too. Come early if you want to work on basics.',communityId:'tango-istanbul',communityName:'Tango Istanbul'}
-      ],
-      trainerbot:[
-        {id:'seed-trainer-1',type:'Practice',text:'Today’s drill: 10 minutes of pulse, then 10 minutes of swing-out rhythm variations.',communityId:'lindy-istanbul',communityName:'Lindy Hop Istanbul'}
-      ]
-    };
-    return (map[username] || []).map(p => ({...p,profile:profileByUsername(username)}));
-  }
-
   function showAuthError(message){
     const el = $('loginError');
     el.textContent = message || 'Something went wrong.';
@@ -781,6 +793,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   }
 
   function profileToUi(row){
+    const danceRows = Array.isArray(row.profile_dance_styles) ? row.profile_dance_styles : [];
+    const dances = danceRows
+      .map(item => item && item.dance_styles ? item.dance_styles.name : '')
+      .filter(Boolean);
     return {
       id: row.id,
       name: row.display_name,
@@ -790,7 +806,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
       privacy: row.privacy || 'public',
       bio: row.bio || '',
       avatarUrl: row.avatar_url || '',
-      dances: []
+      dances,
+      danceStyleIds: danceRows.map(item => item.dance_style_id).filter(id => id !== null && id !== undefined),
+      danceStylesLoaded: Array.isArray(row.profile_dance_styles)
     };
   }
 
@@ -826,7 +844,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   async function loadProfileForUser(user){
     const { data, error } = await supabaseClient
       .from('profiles')
-      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot')
+      .select('id,username,display_name,city,bio,avatar_url,website_url,instagram_url,role,privacy,is_verified,is_bot,profile_dance_styles(dance_style_id,level,dance_role,dance_styles(id,slug,name))')
       .eq('id', user.id)
       .maybeSingle();
     if(error) throw error;
@@ -854,12 +872,12 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     viewedProfile = profile;
     $('gate').classList.add('hidden');
     $('app').classList.remove('hidden');
-    const name = profile.name || 'Test Dancer';
+    const name = profile.name || 'Dancer';
     $('avatar').textContent = name.trim().charAt(0).toUpperCase() || 'D';
     $('profileSummary').innerHTML =
       '<strong style="color:var(--ink)">' + escapeHtml(name) + '</strong><br>' +
       escapeHtml(profile.city || 'Istanbul') + '<br>' +
-      escapeHtml((profile.dances || ['Lindy Hop','Salsa']).join(' · ')) + '<br>' +
+      escapeHtml((profile.dances || []).join(' · ') || 'No dance styles yet') + '<br>' +
       '<span style="font-size:12px">' + escapeHtml(profile.role || 'dancer') + '</span>';
     renderCommunities();
     renderDestinationOptions();
@@ -1129,10 +1147,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   async function openUserProfile(username){
     let profile = realProfilesByUsername[username] || null;
-    if(!profile){
+    if(!profile || !profile.danceStylesLoaded){
       const { data, error } = await supabaseClient
         .from('profiles')
-        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot')
+        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot,profile_dance_styles(dance_style_id,level,dance_role,dance_styles(id,slug,name))')
         .eq('username', username)
         .maybeSingle();
       if(error) console.error(error);
@@ -1141,8 +1159,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
         realProfilesByUsername[profile.username] = profile;
       }
     }
-    if(!profile) profile = demoUsers[username] || null;
-    if(!profile) return;
+    if(!profile){
+      toast('Profile not found.');
+      return;
+    }
     viewedProfile = profile;
     openViewedProfile();
   }
@@ -1187,7 +1207,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(target.id){
       return loadedPosts.filter(post => post.authorId === target.id);
     }
-    return seededPostsFor(target.username);
+    return [];
   }
 
   function postComments(postId){ return commentsByPost.get(postId) || []; }
@@ -1723,17 +1743,18 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   }
 
   function renderHomeEvents(){
-    const card = document.querySelector('.right-card');
-    if(!card) return;
-    const existing = $('dynamicEvents');
-    if(existing) existing.remove();
-    const events = allEvents();
-    if(!events.length) return;
-    const wrap = document.createElement('div');
-    wrap.id = 'dynamicEvents';
-    wrap.innerHTML = '<h3 style="margin-top:18px">Upcoming events</h3>' + events.slice(0,4).map(eventCardHtml).join('');
-    card.appendChild(wrap);
-    bindEventActions(wrap);
+    const host = $('eventsPanelList');
+    if(!host) return;
+    const events = allEvents().slice(0,4);
+    host.innerHTML = events.length
+      ? events.map(event =>
+          '<div class="event"><strong>' + escapeHtml(event.title) + '</strong><span>' +
+          escapeHtml(eventDisplayTime(event)) +
+          (event.location ? ' · ' + escapeHtml(event.location) : '') +
+          (event.communityName ? ' · ' + escapeHtml(event.communityName) : '') +
+          '</span></div>'
+        ).join('')
+      : '<div class="hint">No upcoming events yet.</div>';
   }
 
   function openInviteModal(){
@@ -1963,8 +1984,6 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const p = viewedProfile || currentProfile;
     if(!p) return;
     if(currentProfile && p.id === currentProfile.id){ openEditProfile(); return; }
-    if(!p.id){ toast('This is still a demo profile, not a live account.'); return; }
-
     const { outgoing, incoming } = followStateForProfile(p);
     $('editProfileBtn').disabled = true;
 
@@ -2013,6 +2032,15 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(!currentProfile || !currentProfile.id){ toast('Profile is not connected.'); return; }
 
     $('saveProfileBtn').disabled = true;
+    let persistedDances;
+    try{
+      persistedDances = await syncOwnDanceStyles(dances);
+    }catch(error){
+      $('saveProfileBtn').disabled = false;
+      toast(error.message || 'Could not save dance styles.');
+      return;
+    }
+
     const { data, error } = await supabaseClient
       .from('profiles')
       .update({ display_name:name, username, city, role, bio, privacy })
@@ -2024,7 +2052,9 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     if(error){ toast(error.code === '23505' ? 'That username is already taken.' : error.message); return; }
 
     const persisted = profileToUi(data);
-    persisted.dances = dances;
+    persisted.dances = persistedDances;
+    persisted.danceStyleIds = loadedDanceStyles.filter(style => persistedDances.includes(style.name)).map(style => style.id);
+    persisted.danceStylesLoaded = true;
     currentProfile = persisted;
     viewedProfile = persisted;
     realProfilesByUsername[persisted.username] = persisted;
