@@ -641,27 +641,31 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
 
     const unique = [...new Map(matches.map(style => [style.id, style])).values()];
-    if(unique.length){
-      const { error: upsertError } = await supabaseClient
-        .from('profile_dance_styles')
-        .upsert(
-          unique.map(style => ({profile_id:currentProfile.id,dance_style_id:style.id})),
-          {onConflict:'profile_id,dance_style_id'}
-        );
-      if(upsertError) throw upsertError;
+    const desiredIds = unique.map(style => style.id);
 
-      const ids = unique.map(style => style.id);
+    const { data: existingRows, error: readError } = await supabaseClient
+      .from('profile_dance_styles')
+      .select('dance_style_id')
+      .eq('profile_id', currentProfile.id);
+    if(readError) throw readError;
+
+    const existingIds = new Set((existingRows || []).map(row => row.dance_style_id));
+    const missing = unique.filter(style => !existingIds.has(style.id));
+    const stale = [...existingIds].filter(id => !desiredIds.includes(id));
+
+    if(missing.length){
+      const { error: insertError } = await supabaseClient
+        .from('profile_dance_styles')
+        .insert(missing.map(style => ({profile_id:currentProfile.id,dance_style_id:style.id})));
+      if(insertError) throw insertError;
+    }
+
+    if(stale.length){
       const { error: deleteError } = await supabaseClient
         .from('profile_dance_styles')
         .delete()
         .eq('profile_id', currentProfile.id)
-        .not('dance_style_id','in','(' + ids.join(',') + ')');
-      if(deleteError) throw deleteError;
-    }else{
-      const { error: deleteError } = await supabaseClient
-        .from('profile_dance_styles')
-        .delete()
-        .eq('profile_id', currentProfile.id);
+        .in('dance_style_id', stale);
       if(deleteError) throw deleteError;
     }
 
