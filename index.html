@@ -482,7 +482,7 @@
     </div>
     <div class="field"><label>Location</label><input id="eventLocation" placeholder="Kadıköy, Istanbul"></div>
     <div class="field"><label>Community (optional)</label><select id="eventCommunity"><option value="">No community / personal event</option></select></div>
-    <div class="field"><label>Privacy</label><select id="eventPrivacy"><option value="public">Public — visible to all members</option><option value="private">Private — only invited/following members</option></select></div>
+    <div class="field"><label>Privacy</label><select id="eventPrivacy"><option value="public">Public — visible to all members</option><option value="community">Community only — active community members</option><option value="private">Private — invited users only</option></select></div>
     <div class="field"><label>Description</label><textarea id="eventDescription" placeholder="What should dancers know?"></textarea></div>
     <div class="modal-actions"><button id="cancelEvent" class="secondary">Cancel</button><button id="saveEvent" class="primary">Create event</button></div>
   </div>
@@ -505,6 +505,10 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   let activeCommunityId = null;
   let viewedProfile = null;
   let loadedPosts = [];
+  let loadedEvents = [];
+  let editingEventId = null;
+  let outgoingFollows = new Map();
+  let incomingFollows = new Map();
   let loadedCommunities = [];
   let loadedDanceStyles = [];
   let communityMemberships = new Map();
@@ -523,7 +527,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   }
   function saveJSON(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
   function allCommunities(){ return loadedCommunities; }
-  function allEvents(){ return loadJSON('danceSocialEvents', []); }
+  function allEvents(){ return loadedEvents; }
   function privacyLabel(value){
     if(value === 'private') return '🔒 Private';
     if(value === 'hidden') return '◌ Hidden';
@@ -636,20 +640,77 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     setTopNavActive('home');
   }
 
-  function currentUsername(){ return (currentProfile && currentProfile.username) || 'test'; }
-  function followedUsernames(){ return loadJSON('danceSocialFollowing:' + currentUsername(), []); }
-  function isFollowing(username){ return followedUsernames().includes(username); }
-  function setFollowing(username, value){
-    let list = followedUsernames().filter(x => x !== username);
-    if(value) list.unshift(username);
-    saveJSON('danceSocialFollowing:' + currentUsername(), list);
+  function currentUsername(){ return (currentProfile && currentProfile.username) || 'dancer'; }
+  function cachedProfileById(id){
+    if(!id) return null;
+    if(currentProfile && currentProfile.id === id) return currentProfile;
+    return Object.values(realProfilesByUsername).find(p => p && p.id === id) || null;
+  }
+  function followedUsernames(){
+    return [...outgoingFollows.values()]
+      .filter(row => row.status === 'accepted')
+      .map(row => cachedProfileById(row.following_id))
+      .filter(Boolean)
+      .map(profile => profile.username);
+  }
+  function followStateForProfile(profile){
+    if(!profile || !profile.id) return {outgoing:null,incoming:null};
+    return {
+      outgoing: outgoingFollows.get(profile.id) || null,
+      incoming: incomingFollows.get(profile.id) || null
+    };
+  }
+  function isFollowing(username){
+    const profile = profileByUsername(username);
+    if(!profile || !profile.id) return false;
+    return outgoingFollows.get(profile.id)?.status === 'accepted';
   }
   function profileByUsername(username){
     if(!username) return null;
     if(currentProfile && username === currentUsername()) return currentProfile;
     return realProfilesByUsername[username] || demoUsers[username] || null;
   }
-  function isOwnViewedProfile(){ return !viewedProfile || (viewedProfile.username || 'test') === currentUsername(); }
+  async function refreshFollows(){
+    if(!currentProfile) return;
+    const { data, error } = await supabaseClient
+      .from('follows')
+      .select('follower_id,following_id,status,created_at,updated_at')
+      .or('follower_id.eq.' + currentProfile.id + ',following_id.eq.' + currentProfile.id);
+
+    if(error){
+      console.error(error);
+      toast('Could not load follows');
+      return;
+    }
+
+    outgoingFollows = new Map();
+    incomingFollows = new Map();
+    const relatedIds = new Set();
+    (data || []).forEach(row => {
+      if(row.follower_id === currentProfile.id){
+        outgoingFollows.set(row.following_id, row);
+        relatedIds.add(row.following_id);
+      }
+      if(row.following_id === currentProfile.id){
+        incomingFollows.set(row.follower_id, row);
+        relatedIds.add(row.follower_id);
+      }
+    });
+
+    if(relatedIds.size){
+      const { data: profiles, error: profileError } = await supabaseClient
+        .from('profiles')
+        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot')
+        .in('id', [...relatedIds]);
+      if(profileError) console.error(profileError);
+      (profiles || []).forEach(row => {
+        const profile = profileToUi(row);
+        realProfilesByUsername[profile.username] = profile;
+      });
+    }
+
+    renderProfilePage();
+  }
   function profileCommunityIds(profile){
     if(!profile) return [];
     if(isOwnViewedProfile()){
@@ -777,6 +838,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     renderProfilePage();
     renderPosts();
     refreshCommunities();
+    refreshFollows();
+    refreshEvents();
     renderHomeEvents();
     setTopNavActive('home');
   }
@@ -956,13 +1019,11 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
   function renderCommunityEvents(){
     if(!activeCommunityId) return;
-    const c = allCommunities().find(x => x.id === activeCommunityId);
-    const city = c && c.city ? c.city : 'your city';
-    const events = allEvents().filter(ev => ev.communityId === activeCommunityId && (ev.privacy !== 'private' || ev.creator === currentUsername() || isFollowing(ev.creator)));
+    const events = allEvents().filter(ev => ev.communityId === activeCommunityId);
     $('communityEventsTab').innerHTML =
       '<h3>Upcoming events</h3>' +
-      (events.length ? events.map(ev => '<div class="event-card"><div class="event-card-head"><div><h4>' + escapeHtml(ev.title) + '</h4><span>' + escapeHtml([ev.date,ev.time,ev.location].filter(Boolean).join(' · ')) + '</span></div><span class="privacy-badge ' + (ev.privacy === 'private' ? 'private' : '') + '">' + privacyLabel(ev.privacy) + '</span></div><p>' + escapeHtml(ev.description || '') + '</p></div>').join('') :
-      '<p class="hint">No community events yet.</p>');
+      (events.length ? events.map(eventCardHtml).join('') : '<p class="hint">No visible community events yet.</p>');
+    bindEventActions($('communityEventsTab'));
   }
 
   async function renderCommunityMembers(){
@@ -1036,8 +1097,21 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     openViewedProfile();
   }
 
-  function openUserProfile(username){
-    const profile = profileByUsername(username);
+  async function openUserProfile(username){
+    let profile = realProfilesByUsername[username] || null;
+    if(!profile){
+      const { data, error } = await supabaseClient
+        .from('profiles')
+        .select('id,username,display_name,city,bio,avatar_url,role,privacy,is_verified,is_bot')
+        .eq('username', username)
+        .maybeSingle();
+      if(error) console.error(error);
+      if(data){
+        profile = profileToUi(data);
+        realProfilesByUsername[profile.username] = profile;
+      }
+    }
+    if(!profile) profile = demoUsers[username] || null;
     if(!profile) return;
     viewedProfile = profile;
     openViewedProfile();
@@ -1080,8 +1154,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   function currentUserPosts(){
     const target = viewedProfile || currentProfile;
     if(!target) return [];
-    if(currentProfile && target.id && target.id === currentProfile.id){
-      return loadedPosts.filter(post => post.authorId === currentProfile.id);
+    if(target.id){
+      return loadedPosts.filter(post => post.authorId === target.id);
     }
     return seededPostsFor(target.username);
   }
@@ -1106,60 +1180,87 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     const relatedCommunities = allCommunities().filter(c => relatedIds.has(c.id));
     const dances = Array.isArray(p.dances) ? p.dances : [];
     const bio = p.bio || 'Building a dance life one social at a time.';
-    const own = (p.username || 'test') === currentUsername();
-    const following = !own && isFollowing(p.username);
-    const mutual = !own && following && !!p.followsCurrent;
-    const followerCount = own ? 0 + demoUsers.ayse.followsCurrent + demoUsers.deniz.followsCurrent : Number(p.followers || 0) + (following ? 1 : 0);
-    const followingCount = own ? followedUsernames().length : Number(p.following || 0);
+    const own = !!currentProfile && p.id === currentProfile.id;
+    const relation = followStateForProfile(p);
+    const following = !own && relation.outgoing?.status === 'accepted';
+    const requestPending = !own && relation.outgoing?.status === 'pending';
+    const followsYou = !own && relation.incoming?.status === 'accepted';
+    const incomingPending = !own && relation.incoming?.status === 'pending';
+    const mutual = following && followsYou;
+    const followerCount = own ? [...incomingFollows.values()].filter(x => x.status === 'accepted').length : '—';
+    const followingCount = own ? [...outgoingFollows.values()].filter(x => x.status === 'accepted').length : '—';
     const fullAccess = canViewProfile(p);
 
     $('profileAvatarLarge').textContent = (p.name || 'D').charAt(0).toUpperCase();
     $('profilePageName').textContent = p.name || 'Dancer';
-    $('profilePageHandle').textContent = '@' + (p.username || 'test');
+    $('profilePageHandle').textContent = '@' + (p.username || 'dancer');
     $('profilePageLocation').textContent = (p.city || 'Istanbul') + ' · ' + (p.role || 'dancer');
-    $('profileRelationship').innerHTML = '<span class="privacy-badge ' + ((p.privacy || 'public') === 'private' ? 'private' : '') + '">' + privacyLabel(p.privacy || 'public') + '</span> ' + (own ? '' : (mutual
-      ? '<span class="relationship-badge connected">Connected ✓</span>'
-      : (p.followsCurrent ? '<span class="relationship-badge follows">Follows you</span>' : '')));
-    $('editProfileBtn').textContent = own ? 'Edit profile' : (mutual ? 'Connected ✓' : (following ? 'Following ✓' : 'Follow'));
-    $('editProfileBtn').className = own ? 'secondary' : (following ? 'secondary' : 'primary');
+
+    let relationship = '';
+    if(!own){
+      if(mutual) relationship = '<span class="relationship-badge connected">Connected ✓</span>';
+      else if(incomingPending) relationship = '<span class="relationship-badge follows">Requested to follow you</span>';
+      else if(followsYou) relationship = '<span class="relationship-badge follows">Follows you</span>';
+      else if(requestPending) relationship = '<span class="relationship-badge">Request pending</span>';
+    }
+    $('profileRelationship').innerHTML =
+      '<span class="privacy-badge ' + ((p.privacy || 'public') === 'private' ? 'private' : '') + '">' + privacyLabel(p.privacy || 'public') + '</span> ' + relationship;
+
+    if(own){
+      $('editProfileBtn').textContent = 'Edit profile';
+      $('editProfileBtn').className = 'secondary';
+    } else if(incomingPending){
+      $('editProfileBtn').textContent = 'Accept follow request';
+      $('editProfileBtn').className = 'primary';
+    } else if(requestPending){
+      $('editProfileBtn').textContent = 'Request pending · Cancel';
+      $('editProfileBtn').className = 'secondary';
+    } else if(following){
+      $('editProfileBtn').textContent = 'Following ✓ · Unfollow';
+      $('editProfileBtn').className = 'secondary';
+    } else {
+      $('editProfileBtn').textContent = (p.privacy || 'public') === 'private' ? 'Request to follow' : 'Follow';
+      $('editProfileBtn').className = 'primary';
+    }
+
     $('profilePostCount').textContent = posts.length;
     $('profileCommunityCount').textContent = relatedCommunities.length;
     $('profileDanceCount').textContent = dances.length;
     $('profileFollowerCount').textContent = followerCount;
     $('profileFollowingCount').textContent = followingCount;
-    $('profileBioView').textContent = bio;
+    $('profileBioView').textContent = fullAccess ? bio : 'Private profile';
     $('profileDanceChips').innerHTML = dances.length ? dances.map(d => '<span>' + escapeHtml(d) + '</span>').join('') : '<span>Dance curious</span>';
 
     $('profilePostsTab').innerHTML = !fullAccess
-      ? '<div class="profile-panel"><h3>Private profile</h3><p class="sub" style="margin:0">Follow this dancer to see their posts and full profile.</p></div>'
+      ? '<div class="profile-panel"><h3>Private profile</h3><p class="sub" style="margin:0">An accepted follow is required to see follower-only posts and the full profile.</p></div>'
       : (posts.length
         ? posts.map(profilePostHtml).join('')
-        : '<div class="profile-panel"><h3>No posts yet</h3><p class="sub" style="margin:0">Your profile posts and community posts will appear here.</p></div>');
+        : '<div class="profile-panel"><h3>No posts yet</h3><p class="sub" style="margin:0">Profile and community posts will appear here.</p></div>');
     $('profilePostsTab').querySelectorAll('[data-profile-community-id]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.profileCommunityId)));
     $('profilePostsTab').querySelectorAll('[data-user-username]').forEach(btn => btn.addEventListener('click', () => openUserProfile(btn.dataset.userUsername)));
 
     $('profileCommunitiesTab').innerHTML = !fullAccess
-      ? '<h3>Private profile</h3><p class="sub" style="margin:0">Communities are hidden until you follow this dancer.</p>'
+      ? '<h3>Private profile</h3><p class="sub" style="margin:0">Communities are hidden until the follow request is accepted.</p>'
       : '<h3>' + (own ? 'Your communities' : escapeHtml(p.name) + '’s communities') + '</h3>' +
       (relatedCommunities.length
         ? '<div class="profile-community-grid">' + relatedCommunities.map(c =>
           '<div class="profile-community-card"><strong>' + escapeHtml(c.name) + '</strong><span>' + escapeHtml([c.dance,c.city].filter(Boolean).join(' · ')) + '</span><br><button data-profile-open-community="' + escapeHtml(c.id) + '">Open</button></div>'
         ).join('') + '</div>'
-        : '<p class="sub" style="margin:0">Join or create communities and they will appear here.</p>');
+        : '<p class="sub" style="margin:0">No visible communities yet.</p>');
     if(fullAccess) $('profileCommunitiesTab').querySelectorAll('[data-profile-open-community]').forEach(btn => btn.addEventListener('click', () => openCommunity(btn.dataset.profileOpenCommunity)));
 
-    const visibleEvents = allEvents().filter(ev => ev.creator === (p.username || 'test') && (own || ev.privacy !== 'private' || following));
+    const visibleEvents = p.id ? allEvents().filter(ev => ev.creatorId === p.id) : [];
     $('profileEventsTab').innerHTML = !fullAccess
-      ? '<h3>Private profile</h3><p class="sub" style="margin:0">Events are hidden until you follow this dancer.</p>'
+      ? '<h3>Private profile</h3><p class="sub" style="margin:0">Events are hidden here until the follow request is accepted.</p>'
       : '<h3>' + (own ? 'Upcoming dance life' : escapeHtml(p.name) + '’s upcoming events') + '</h3>' +
-      (visibleEvents.length ? visibleEvents.map(ev => '<div class="event-card"><div class="event-card-head"><div><h4>' + escapeHtml(ev.title) + '</h4><span>' + escapeHtml([ev.date,ev.time,ev.location].filter(Boolean).join(' · ')) + '</span></div><span class="privacy-badge ' + (ev.privacy === 'private' ? 'private' : '') + '">' + privacyLabel(ev.privacy) + '</span></div><p>' + escapeHtml(ev.description || '') + '</p></div>').join('') : '') +
-      (visibleEvents.length ? '' : '<p class="hint">Events you create or mark Going will live here.</p>');
+      (visibleEvents.length ? visibleEvents.map(eventCardHtml).join('') : '<p class="hint">No visible upcoming events.</p>');
+    bindEventActions($('profileEventsTab'));
 
     $('profileAboutTab').innerHTML =
       '<h3>About</h3><div class="profile-about-grid">' +
       '<div class="about-item"><span>City</span><strong>' + escapeHtml(p.city || 'Istanbul') + '</strong></div>' +
       '<div class="about-item"><span>Role</span><strong>' + escapeHtml(p.role || 'dancer') + '</strong></div>' +
-      '<div class="about-item"><span>Username</span><strong>@' + escapeHtml(p.username || 'test') + '</strong></div>' +
+      '<div class="about-item"><span>Username</span><strong>@' + escapeHtml(p.username || 'dancer') + '</strong></div>' +
       '<div class="about-item"><span>Privacy</span><strong>' + escapeHtml((p.privacy || 'public').toUpperCase()) + '</strong></div>' +
       '</div><p style="line-height:1.65;color:#4b4740;margin-bottom:0">' + (fullAccess ? escapeHtml(bio) : 'This profile is private.') + '</p>';
   }
@@ -1298,26 +1399,149 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     renderProfilePage();
   }
 
-  function openEventModal(){
+  function normalizeEvent(row){
+    const creator = row.profiles || {};
+    const community = row.communities || {};
+    if(creator.username){
+      realProfilesByUsername[creator.username] = profileToUi(creator);
+    }
+    return {
+      id: row.id,
+      creatorId: row.creator_id,
+      creator: creator.username || '',
+      creatorName: creator.display_name || '',
+      communityId: row.community_id || '',
+      communityName: community.name || '',
+      title: row.title,
+      description: row.description || '',
+      startsAt: row.starts_at,
+      endsAt: row.ends_at,
+      timezone: row.timezone || 'Europe/Istanbul',
+      location: row.venue_name || row.address || row.city || '',
+      city: row.city || '',
+      privacy: row.privacy || 'public',
+      recurrenceRule: row.recurrence_rule || ''
+    };
+  }
+
+  async function refreshEvents(){
+    if(!currentProfile) return;
+    const { data, error } = await supabaseClient
+      .from('events')
+      .select('id,creator_id,community_id,title,description,starts_at,ends_at,timezone,venue_name,address,city,privacy,recurrence_rule,created_at,updated_at,profiles!events_creator_id_fkey(id,username,display_name,city,bio,role,privacy,avatar_url),communities(id,name,slug,privacy)')
+      .gte('starts_at', new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString())
+      .order('starts_at',{ascending:true})
+      .limit(100);
+
+    if(error){
+      console.error(error);
+      toast('Could not load events');
+      return;
+    }
+    loadedEvents = (data || []).map(normalizeEvent);
+    renderHomeEvents();
+    renderCommunityEvents();
+    renderProfilePage();
+  }
+
+  function eventDateParts(event){
+    const date = new Date(event.startsAt);
+    if(Number.isNaN(date.getTime())) return {date:'',time:''};
+    const pad = n => String(n).padStart(2,'0');
+    return {
+      date: date.getFullYear() + '-' + pad(date.getMonth()+1) + '-' + pad(date.getDate()),
+      time: pad(date.getHours()) + ':' + pad(date.getMinutes())
+    };
+  }
+
+  function eventDisplayTime(event){
+    try{
+      return new Intl.DateTimeFormat(undefined,{
+        weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'
+      }).format(new Date(event.startsAt));
+    }catch(e){ return ''; }
+  }
+
+  function eventCardHtml(event){
+    const own = !!currentProfile && event.creatorId === currentProfile.id;
+    const community = event.communityName ? ' · ' + escapeHtml(event.communityName) : '';
+    const actions = own
+      ? '<div class="actions-line"><button type="button" data-edit-event="' + event.id + '">Edit</button><button type="button" data-delete-event="' + event.id + '">Delete</button></div>'
+      : '';
+    return '<div class="event-card"><div class="event-card-head"><div><h4>' + escapeHtml(event.title) + '</h4><span>' +
+      escapeHtml(eventDisplayTime(event)) + (event.location ? ' · ' + escapeHtml(event.location) : '') + community +
+      '</span></div><span class="privacy-badge ' + (event.privacy === 'private' ? 'private' : '') + '">' + privacyLabel(event.privacy) + '</span></div>' +
+      (event.description ? '<p>' + escapeHtml(event.description) + '</p>' : '') + actions + '</div>';
+  }
+
+  function bindEventActions(root){
+    if(!root) return;
+    root.querySelectorAll('[data-edit-event]').forEach(btn => btn.addEventListener('click', () => {
+      const event = allEvents().find(ev => ev.id === btn.dataset.editEvent);
+      if(event) openEventModal(event);
+    }));
+    root.querySelectorAll('[data-delete-event]').forEach(btn => btn.addEventListener('click', () => deleteEvent(btn.dataset.deleteEvent)));
+  }
+
+  function openEventModal(eventRecord=null){
+    if(eventRecord && !eventRecord.id) eventRecord = null;
+    editingEventId = eventRecord ? eventRecord.id : null;
     setTopNavActive('events');
     renderEventCommunityOptions();
+    $('eventModalTitle').textContent = eventRecord ? 'Edit event' : 'Create an event';
+    $('saveEvent').textContent = eventRecord ? 'Save changes' : 'Create event';
+
+    if(eventRecord){
+      const parts = eventDateParts(eventRecord);
+      $('eventTitle').value = eventRecord.title || '';
+      $('eventDate').value = parts.date;
+      $('eventTime').value = parts.time;
+      $('eventLocation').value = eventRecord.location || '';
+      $('eventCommunity').value = eventRecord.communityId || '';
+      $('eventPrivacy').value = eventRecord.privacy || 'public';
+      $('eventDescription').value = eventRecord.description || '';
+    } else {
+      $('eventTitle').value = '';
+      $('eventDate').value = '';
+      $('eventTime').value = '';
+      $('eventLocation').value = '';
+      $('eventCommunity').value = '';
+      $('eventPrivacy').value = 'public';
+      $('eventDescription').value = '';
+    }
+
     $('eventModal').classList.remove('hidden');
     $('eventTitle').focus();
   }
-  function closeEventModal(){ $('eventModal').classList.add('hidden'); syncTopNavToView(); }
+
+  function closeEventModal(){
+    editingEventId = null;
+    $('eventModal').classList.add('hidden');
+    syncTopNavToView();
+  }
+
+  async function deleteEvent(eventId){
+    const event = allEvents().find(ev => ev.id === eventId);
+    if(!event || event.creatorId !== currentProfile?.id) return;
+    if(!window.confirm('Delete this event?')) return;
+    const { error } = await supabaseClient.from('events').delete().eq('id', eventId);
+    if(error){ toast(error.message); return; }
+    toast('Event deleted');
+    await refreshEvents();
+  }
+
   function renderHomeEvents(){
-    const events = allEvents().filter(ev => ev.privacy !== 'private' || ev.creator === currentUsername() || isFollowing(ev.creator));
     const card = document.querySelector('.right-card');
     if(!card) return;
     const existing = $('dynamicEvents');
     if(existing) existing.remove();
+    const events = allEvents();
     if(!events.length) return;
     const wrap = document.createElement('div');
     wrap.id = 'dynamicEvents';
-    wrap.innerHTML = '<h3 style="margin-top:18px">Created events</h3>' + events.slice(0,4).map(ev =>
-      '<div class="event"><strong>' + escapeHtml(ev.title) + '</strong><span>' + escapeHtml([ev.date,ev.time,ev.location].filter(Boolean).join(' · ')) + ' · ' + privacyLabel(ev.privacy) + '</span></div>'
-    ).join('');
+    wrap.innerHTML = '<h3 style="margin-top:18px">Upcoming events</h3>' + events.slice(0,4).map(eventCardHtml).join('');
     card.appendChild(wrap);
+    bindEventActions(wrap);
   }
 
   function openCommunityModal(){
@@ -1490,14 +1714,44 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
   $('backFromProfileBtn').addEventListener('click', closeProfileView);
   document.querySelectorAll('.profile-tab').forEach(btn => btn.addEventListener('click', () => selectProfileTab(btn.dataset.profileTab)));
 
-  $('editProfileBtn').addEventListener('click', () => {
+  $('editProfileBtn').addEventListener('click', async () => {
     const p = viewedProfile || currentProfile;
     if(!p) return;
-    if((p.username || 'test') === currentUsername()){ openEditProfile(); return; }
-    const next = !isFollowing(p.username);
-    setFollowing(p.username, next);
+    if(currentProfile && p.id === currentProfile.id){ openEditProfile(); return; }
+    if(!p.id){ toast('This is still a demo profile, not a live account.'); return; }
+
+    const { outgoing, incoming } = followStateForProfile(p);
+    $('editProfileBtn').disabled = true;
+
+    if(incoming?.status === 'pending'){
+      const { error } = await supabaseClient
+        .from('follows')
+        .update({status:'accepted'})
+        .eq('follower_id', p.id)
+        .eq('following_id', currentProfile.id);
+      if(error){ $('editProfileBtn').disabled = false; toast(error.message); return; }
+      toast('Follow request accepted');
+    } else if(outgoing){
+      const { error } = await supabaseClient
+        .from('follows')
+        .delete()
+        .eq('follower_id', currentProfile.id)
+        .eq('following_id', p.id);
+      if(error){ $('editProfileBtn').disabled = false; toast(error.message); return; }
+      toast(outgoing.status === 'pending' ? 'Follow request cancelled' : 'Unfollowed ' + p.name);
+    } else {
+      const status = (p.privacy || 'public') === 'private' ? 'pending' : 'accepted';
+      const { error } = await supabaseClient
+        .from('follows')
+        .insert({follower_id:currentProfile.id,following_id:p.id,status});
+      if(error){ $('editProfileBtn').disabled = false; toast(error.message); return; }
+      toast(status === 'pending' ? 'Follow request sent' : 'Following ' + p.name);
+    }
+
+    $('editProfileBtn').disabled = false;
+    await refreshFollows();
+    await renderPosts();
     renderProfilePage();
-    toast(next ? ('Following ' + p.name) : ('Unfollowed ' + p.name));
   });
   $('closeEditProfile').addEventListener('click', closeEditProfile);
   $('cancelEditProfile').addEventListener('click', closeEditProfile);
@@ -1623,34 +1877,69 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     toast('Posted to ' + community.name);
   });
 
-  $('createEventBtn').addEventListener('click', openEventModal);
+  $('createEventBtn').addEventListener('click', () => openEventModal());
   $('topEventsLink').addEventListener('click', e => { e.preventDefault(); openEventModal(); });
   $('sideEventsLink').addEventListener('click', e => { e.preventDefault(); openEventModal(); });
   $('closeEventModal').addEventListener('click', closeEventModal);
   $('cancelEvent').addEventListener('click', closeEventModal);
   $('eventModal').addEventListener('click', e => { if(e.target === $('eventModal')) closeEventModal(); });
-  $('saveEvent').addEventListener('click', () => {
+
+  $('saveEvent').addEventListener('click', async () => {
     const title = $('eventTitle').value.trim();
     const date = $('eventDate').value;
-    const time = $('eventTime').value;
+    const time = $('eventTime').value || '00:00';
     const location = $('eventLocation').value.trim();
-    const communityId = $('eventCommunity').value;
+    const communityId = $('eventCommunity').value || null;
     const privacy = $('eventPrivacy').value;
     const description = $('eventDescription').value.trim();
+
     if(!title || !date){ toast('Event title and date are required.'); return; }
-    const events = allEvents();
-    events.unshift({
-      id:'event-' + Date.now(),
-      title,date,time,location,communityId,privacy,description,
-      creator:currentUsername()
-    });
-    saveJSON('danceSocialEvents', events);
-    $('eventTitle').value=''; $('eventDate').value=''; $('eventTime').value=''; $('eventLocation').value=''; $('eventCommunity').value=''; $('eventPrivacy').value='public'; $('eventDescription').value='';
+    if(privacy === 'community' && !communityId){ toast('Choose a community for a community-only event.'); return; }
+    if(communityId){
+      const community = allCommunities().find(c => c.id === communityId);
+      if(!community || !canPostToCommunity(community)){ toast('You must be an active community member to create its event.'); return; }
+    }
+
+    const starts = new Date(date + 'T' + time);
+    if(Number.isNaN(starts.getTime())){ toast('Choose a valid date and time.'); return; }
+    const payload = {
+      community_id: communityId,
+      title,
+      description: description || null,
+      starts_at: starts.toISOString(),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Istanbul',
+      venue_name: location || null,
+      city: currentProfile?.city || null,
+      privacy
+    };
+
+    $('saveEvent').disabled = true;
+    $('saveEvent').textContent = editingEventId ? 'Saving…' : 'Creating…';
+
+    let result;
+    if(editingEventId){
+      result = await supabaseClient
+        .from('events')
+        .update(payload)
+        .eq('id', editingEventId)
+        .select('id')
+        .single();
+    } else {
+      result = await supabaseClient
+        .from('events')
+        .insert({...payload,creator_id:currentProfile.id})
+        .select('id')
+        .single();
+    }
+
+    $('saveEvent').disabled = false;
+    $('saveEvent').textContent = editingEventId ? 'Save changes' : 'Create event';
+    if(result.error){ toast(result.error.message); return; }
+
+    const wasEdit = !!editingEventId;
     closeEventModal();
-    renderHomeEvents();
-    renderProfilePage();
-    if(activeCommunityId) renderCommunityEvents();
-    toast(title + ' created');
+    await refreshEvents();
+    toast(wasEdit ? 'Event updated' : title + ' created');
   });
 
   $('createCommunityBtn').addEventListener('click', openCommunityModal);
